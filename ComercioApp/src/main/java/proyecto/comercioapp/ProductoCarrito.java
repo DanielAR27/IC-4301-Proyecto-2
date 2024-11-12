@@ -276,7 +276,6 @@ public class ProductoCarrito extends javax.swing.JDialog {
         img = (String) productoInfo.get(7);
         reviews = (Integer) productoInfo.get(8);
         descuento = (Float) productoInfo.get(9);
-        System.out.println("DESCUENTO: " + descuento);
     }
     
 private void actualizarLabels() {

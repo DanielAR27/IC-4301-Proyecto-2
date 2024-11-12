@@ -71,7 +71,7 @@ public class AddDirectionMenu extends javax.swing.JFrame {
 
         List<String> paises = DBMediator.getPaises();
         paisesComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(paises.toArray(new String[0])));
-        paisesComboBox.setMaximumRowCount(6);
+        paisesComboBox.setMaximumRowCount(5);
         // Agregar un ActionListener al comboBox de países
         paisesComboBox.addActionListener(e -> {
             // Obtener el país seleccionado
@@ -100,7 +100,7 @@ public class AddDirectionMenu extends javax.swing.JFrame {
 
         List<String> estadosDeCostaRica = DBMediator.getEstadosPorPais("Costa Rica");
         estadosComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(estadosDeCostaRica.toArray(new String[0])));
-        estadosComboBox.setMaximumRowCount(6);
+        estadosComboBox.setMaximumRowCount(5);
 
         ciudadLabel.setForeground(new java.awt.Color(0, 0, 0));
         ciudadLabel.setText("Ciudad");

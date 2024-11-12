@@ -345,21 +345,25 @@ public class CarritoView extends javax.swing.JFrame {
         } else {
             // Se deja la vista para el primer producto.
             panelSeleccionado(0);
-            for (List<Object> producto : productosPagina) {
+            for (List<Object> carritoProducto : productosPagina) {
                 JPanel productoPanel = panelesProductos.get(index);
 
                 if (productoPanel != null) {
-                    String nombreProducto = (String) producto.get(2);
-                    int cantidad = (Integer) producto.get(4);
-                    float precio = (Float) producto.get(5);
-                    float descuento = (Float) producto.get(6);
-                    float lineaTotal = (Float) producto.get(7);
+                    String nombreProducto = (String) carritoProducto.get(2);
+                    int cantidad = (Integer) carritoProducto.get(4);
+                    float precio = (Float) carritoProducto.get(5);
+                    float descuento = (Float) carritoProducto.get(6);
+                    float lineaTotal = (Float) carritoProducto.get(7);
 
-                    String textoProducto = nombreProducto + "   " + cantidad + " x £" + String.format("%.2f", precio) +
-                            " = £" + String.format("%.2f", lineaTotal);
+                    // Calcular el porcentaje de descuento
+                    float porcentajeDescuento = (precio > 0) ? (descuento / precio) * 100 : 0;
+
+                    // Formatear el texto del producto con el porcentaje de descuento
+                    String textoProducto = nombreProducto + "   " + cantidad + " x £" + String.format("%.2f", precio);
                     if (descuento > 0) {
-                        textoProducto += " (%)";
+                        textoProducto += " (" + String.format("%.0f", porcentajeDescuento) + "% de descuento)";
                     }
+                    textoProducto += " = £" + String.format("%.2f", lineaTotal);
 
                     JLabel productoLabel = (JLabel) productoPanel.getComponent(0);
                     productoLabel.setText(textoProducto);
@@ -385,7 +389,7 @@ public class CarritoView extends javax.swing.JFrame {
 
     private void panelSeleccionado(int panelIndex) {
         if (panelIndex < productosPagina.size()) {
-            List<Object> producto = productosPagina.get(panelIndex);
+            List<Object> carritoProducto = productosPagina.get(panelIndex);
 
             // Resaltar el panel seleccionado
             for (Map.Entry<Integer, JPanel> entry : panelesProductos.entrySet()) {
@@ -399,7 +403,7 @@ public class CarritoView extends javax.swing.JFrame {
 
             // Actualizar la imagen en productPicPanel
             try {
-                String urlImagen = (String) producto.get(8);
+                String urlImagen = (String) carritoProducto.get(8);
                 ImageIcon iconoProducto = new ImageIcon(new URL(urlImagen));
 
                 JLabel imagenLabel = new JLabel();
@@ -411,7 +415,7 @@ public class CarritoView extends javax.swing.JFrame {
                 productPicPanel.add(imagenLabel);
 
                 // Verificar si hay descuento y mostrar la imagen de descuento
-                float descuento = (Float) producto.get(6);
+                float descuento = (Float) carritoProducto.get(6);
                 if (descuento > 0) {
                     try {
                         ImageIcon iconoDescuento = new ImageIcon(new URL(descuentoURL));
@@ -431,7 +435,7 @@ public class CarritoView extends javax.swing.JFrame {
             }
 
             // Actualizar la descripción
-            String descripcion = "<html><b>Descripción:</b> " + (String) producto.get(3) + "</html>";
+            String descripcion = "<html><b>Descripción:</b> " + (String) carritoProducto.get(3) + "</html>";
             descripcionLabel.setText(descripcion);
         }
     }
@@ -439,8 +443,8 @@ public class CarritoView extends javax.swing.JFrame {
     private void borrarCarritoProducto(int panelIndex){
         try{
             if (panelIndex < productosPagina.size()) {
-                    List<Object> producto = productosPagina.get(panelIndex);
-                    int carritoProducto = (Integer) producto.get(0);
+                    List<Object> carritoProducto = productosPagina.get(panelIndex);
+                    int carritoProductoID = (Integer) carritoProducto.get(0);
                     int respuesta = JOptionPane.showConfirmDialog(this, 
                      "¿Está seguro de eliminar este producto del carrito? Puede volver a agregarlo si aún está disponible.", 
                      "Advertencia", 
@@ -449,7 +453,7 @@ public class CarritoView extends javax.swing.JFrame {
                     );
 
                 if (respuesta == JOptionPane.YES_OPTION) {
-                    int res = DBMediator.deleteCarritoProducto(usuarioID, carritoProducto);
+                    int res = DBMediator.deleteCarritoProducto(usuarioID, carritoProductoID);
                     switch(res){
                         case 0->{
                             JOptionPane.showMessageDialog(this,

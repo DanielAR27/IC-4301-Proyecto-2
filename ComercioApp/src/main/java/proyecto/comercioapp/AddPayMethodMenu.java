@@ -27,7 +27,6 @@ public class AddPayMethodMenu extends javax.swing.JFrame {
         this.usuarioID = usuarioID;
         this.metodoPagoID = metodoPagoID;
         if (metodoPagoID != null){
-            System.out.println("Cargando info");
             cargarDatosMetodoPago();
         }        
     }
@@ -235,7 +234,6 @@ public class AddPayMethodMenu extends javax.swing.JFrame {
 
     private void cargarDatosMetodoPago(){
         List <Object> metodoPagoInfo = DBMediator.getMetodoPagoPorID(metodoPagoID);
-        System.out.println("Datos obtenidos: " + metodoPagoInfo);
         String decryptedCardNumber = CheckUtils.decrpytCardNumber((String) metodoPagoInfo.get(0),
                 (String) metodoPagoInfo.get(1));
         creditNumberTextField.setText(decryptedCardNumber);

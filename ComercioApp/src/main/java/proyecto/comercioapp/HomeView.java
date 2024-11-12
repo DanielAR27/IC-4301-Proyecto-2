@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.awt.event.KeyEvent;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,6 +19,9 @@ import proyecto.db.DBMediator;
 public class HomeView extends javax.swing.JFrame {
 
     private int usuarioID;
+    private String searchFilter;
+    private String selectedItem;
+    private int stillProducts;
     private int pagina;
     private String descuentoURL;
     private Map<Integer, JButton> botonesProductos;
@@ -28,12 +33,15 @@ public class HomeView extends javax.swing.JFrame {
     
     public HomeView(int usuarioID){
         initComponents();
-        this.setLayout(null);
-        this.usuarioID = usuarioID;
+        this.usuarioID = usuarioID;        
+        inicializarFiltros();
         this.descuentoURL = "https://i.ibb.co/4tMXLwq/descuento-img.png";
         this.pagina = 0;
-        this.botonesProductos = new TreeMap<>();
         this.productosPagina = new ArrayList<>();
+        this.botonesProductos = new TreeMap<>();
+        this.searchFilter = "Sin filtro activo.";
+        this.stillProducts = DBMediator.verificarProductosPorPagina(pagina);
+        this.productosPagina = DBMediator.getProductosPorPagina(pagina);
         crearBotonesProductos();
         actualizarBotones(pagina);
      }
@@ -52,17 +60,32 @@ public class HomeView extends javax.swing.JFrame {
         anteriorButton = new javax.swing.JButton();
         siguienteButton = new javax.swing.JButton();
         shopIcon = new javax.swing.JButton();
+        receiptIcon = new javax.swing.JButton();
+        filterComboBox = new javax.swing.JComboBox<>();
+        filterLabel = new javax.swing.JLabel();
+        selectLabel = new javax.swing.JLabel();
+        filterDetailComboBox = new javax.swing.JComboBox<>();
+        filterTextField = new javax.swing.JTextField();
+        searchButton = new javax.swing.JButton();
+        reviewIcon = new javax.swing.JButton();
+        adminIcon = new javax.swing.JButton();
 
+        JMenuItem userOption = new JMenuItem("Ver datos de Usuario");
         JMenuItem directionOption = new JMenuItem("Registrar Dirección");
         JMenuItem payOption = new JMenuItem("Agregar método de pago");
         JMenuItem logoutOption = new JMenuItem("Cerrar Sesión");
 
         // Agregar los elementos al menú emergente
+        menuMomentaneo.add(userOption);
         menuMomentaneo.add(directionOption);
         menuMomentaneo.add(payOption);
         menuMomentaneo.add(logoutOption);
 
         // Registrar la funcionalidad del click.
+        userOption.addActionListener(e -> {
+            System.out.println("Not developed yet.");
+        });
+
         directionOption.addActionListener(e -> {
             this.dispose();
             DirectionMenu directionMenu = new DirectionMenu(usuarioID);
@@ -152,21 +175,149 @@ public class HomeView extends javax.swing.JFrame {
             }
         });
 
+        try {
+            URL urlReceiptIcon = new URL("https://i.ibb.co/TqFCWH7/receipt-img.png");
+            ImageIcon receipt = new ImageIcon(urlReceiptIcon);
+            receiptIcon.setIcon(receipt);
+
+            // Agregar texto debajo del ícono y usar HTML para formatearlo en negrita
+            receiptIcon.setText("<html><center><b>Facturas</b></center></html>");
+
+            // Configurar la posición del texto y el ícono
+            receiptIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            receiptIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+            // Hacer el fondo transparente y quitar el borde
+            receiptIcon.setContentAreaFilled(false); // Hace que el fondo sea transparente
+            receiptIcon.setBorderPainted(false); // Quita el borde
+            receiptIcon.setFocusPainted(false); // Quita el borde de enfoque al hacer clic
+        }catch(Exception e){
+            receiptIcon.setText("No se ha encontrado la imagen.");
+        }
+        receiptIcon.setPreferredSize(new java.awt.Dimension(64, 64));
+        receiptIcon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                receiptIconActionPerformed(evt);
+            }
+        });
+
+        filterComboBox.setMaximumRowCount(5);
+        filterComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sin filtro activo.", "Filtrar por precio.", "Filtrar por popularidad.", "Filtrar por marca.", "Filtrar por categoría.", "Filtrar por nombre." , "Filtrar por descuento activo."}));
+        filterComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterComboBoxActionPerformed(evt);
+            }
+        });
+
+        filterLabel.setText("Filtrar por:");
+
+        selectLabel.setText("Seleccion Label");
+
+        filterDetailComboBox.setMaximumRowCount(5);
+        filterDetailComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        filterDetailComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterDetailComboBoxActionPerformed(evt);
+            }
+        });
+
+        filterTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                filterTextFieldKeyPressed(evt);
+            }
+        });
+
+        searchButton.setText("Buscar");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+
+        try {
+            URL urlReviewIcon = new URL("https://i.ibb.co/NT5KZ2D/reviews-img.png");
+            ImageIcon review = new ImageIcon(urlReviewIcon);
+            reviewIcon.setIcon(review);
+
+            // Agregar texto debajo del ícono y usar HTML para formatearlo en negrita
+            reviewIcon.setText("<html><center><b>Reviews</b></center></html>");
+
+            // Configurar la posición del texto y el ícono
+            reviewIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            reviewIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+            // Hacer el fondo transparente y quitar el borde
+            reviewIcon.setContentAreaFilled(false); // Hace que el fondo sea transparente
+            reviewIcon.setBorderPainted(false); // Quita el borde
+            reviewIcon.setFocusPainted(false); // Quita el borde de enfoque al hacer clic
+        }catch(Exception e){
+            reviewIcon.setText("No se ha encontrado la imagen.");
+        }
+        reviewIcon.setPreferredSize(new java.awt.Dimension(64, 64));
+        reviewIcon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reviewIconActionPerformed(evt);
+            }
+        });
+
+        try {
+            URL urlAdminIcon = new URL("https://i.ibb.co/rd1YLFJ/tuerca.png");
+            ImageIcon admin = new ImageIcon(urlAdminIcon);
+            adminIcon.setIcon(admin);
+
+            // Agregar texto debajo del ícono y usar HTML para formatearlo en negrita
+            adminIcon.setText("<html><center><b>Administrador</b></center></html>");
+
+            // Configurar la posición del texto y el ícono
+            adminIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            adminIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+            // Hacer el fondo transparente y quitar el borde
+            adminIcon.setContentAreaFilled(false); // Hace que el fondo sea transparente
+            adminIcon.setBorderPainted(false); // Quita el borde
+            adminIcon.setFocusPainted(false); // Quita el borde de enfoque al hacer clic
+        }catch(Exception e){
+            adminIcon.setText("No se ha encontrado la imagen.");
+        }
+        adminIcon.setPreferredSize(new java.awt.Dimension(64, 64));
+        adminIcon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminIconActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(311, 311, 311)
-                .addComponent(anteriorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
-                .addComponent(siguienteButton)
-                .addContainerGap(385, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(shopIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(usuarioIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(311, 311, 311)
+                        .addComponent(anteriorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addComponent(siguienteButton)
+                        .addGap(0, 374, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(filterTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(filterComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(filterLabel, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(filterDetailComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(selectLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(adminIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(reviewIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(receiptIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(shopIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(usuarioIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -174,13 +325,32 @@ public class HomeView extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(usuarioIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(shopIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 371, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(anteriorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(siguienteButton))
-                .addGap(95, 95, 95))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(shopIcon, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                            .addComponent(receiptIcon, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                            .addComponent(usuarioIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(reviewIcon, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                            .addComponent(adminIcon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 371, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(anteriorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(siguienteButton))
+                        .addGap(95, 95, 95))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(filterLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(filterComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(selectLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(filterDetailComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(searchButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(filterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
@@ -208,6 +378,127 @@ public class HomeView extends javax.swing.JFrame {
         CarritoView cv = new CarritoView (usuarioID);
         cv.setVisible(true);
     }//GEN-LAST:event_shopIconActionPerformed
+
+    private void receiptIconActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_receiptIconActionPerformed
+        this.dispose();
+        FacturasView fv = new FacturasView (usuarioID);
+        fv.setVisible(true);
+    }//GEN-LAST:event_receiptIconActionPerformed
+
+    private void filterComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterComboBoxActionPerformed
+        searchFilter = (String) filterComboBox.getSelectedItem();
+        switch (searchFilter) {
+            case "Sin filtro activo.":
+                selectLabel.setVisible(false);
+                searchButton.setVisible(false);
+                filterDetailComboBox.setVisible(false);
+                filterTextField.setVisible(false);
+                this.pagina = 0;
+                actualizarBotones(pagina);
+                break;
+            case "Filtrar por precio.":
+                 selectLabel.setText("Elija como filtrar el precio:");
+                 selectLabel.setVisible(true);
+                 searchButton.setVisible(false);
+                 filterDetailComboBox.setVisible(true);
+                 filterTextField.setVisible(false);
+                 filterDetailComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Ascendente", "Descendente"}));
+                 selectedItem = (String) filterDetailComboBox.getSelectedItem();
+                 this.pagina = 0;
+                 actualizarBotones(pagina);
+                 break;
+            case "Filtrar por popularidad.":
+                 selectLabel.setText("Elija como filtrar la calificación promedio:");
+                 selectLabel.setVisible(true);
+                 searchButton.setVisible(false);
+                 filterDetailComboBox.setVisible(true);
+                 filterTextField.setVisible(false);
+                 filterDetailComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Ascendente", "Descendente"}));
+                 selectedItem = (String) filterDetailComboBox.getSelectedItem();
+                 this.pagina = 0;
+                 actualizarBotones(pagina);
+                 break;
+            case "Filtrar por marca.":
+                List<String> marcas = DBMediator.getMarcas();
+                selectLabel.setText("Elija una marca para filtrar:");
+                selectLabel.setVisible(true);
+                searchButton.setVisible(false);
+                filterDetailComboBox.setVisible(true);
+                filterTextField.setVisible(false);
+                if (marcas.isEmpty() || marcas == null){
+                    filterDetailComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "No hay marcas disponibles." }));
+                }else{
+                    filterDetailComboBox.setModel(new DefaultComboBoxModel<>(marcas.toArray(new String[0])));
+                    selectedItem = (String) filterDetailComboBox.getSelectedItem();
+                    this.pagina = 0;
+                    actualizarBotones(pagina);
+                }
+                break;
+            case "Filtrar por categoría.":
+                List<String> categorias = DBMediator.getCategorias();
+                selectLabel.setText("Elija una categoría para filtrar:");
+                selectLabel.setVisible(true);
+                searchButton.setVisible(false);
+                filterDetailComboBox.setVisible(true);
+                filterTextField.setVisible(false);
+                if (categorias.isEmpty() || categorias == null){
+                    filterDetailComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "No hay categorías disponibles." }));
+                }else{
+                    filterDetailComboBox.setModel(new DefaultComboBoxModel<>(categorias.toArray(new String[0])));
+                    selectedItem = (String) filterDetailComboBox.getSelectedItem();
+                    this.pagina = 0;
+                    actualizarBotones(pagina);
+                }
+                break;
+            case "Filtrar por nombre.":
+                selectLabel.setText("Elija un nombre para filtrar:");
+                selectLabel.setVisible(true);
+                searchButton.setVisible(true);
+                filterDetailComboBox.setVisible(false);
+                filterTextField.setVisible(true);
+                break;
+            case "Filtrar por descuento activo.":
+                selectLabel.setVisible(false);
+                searchButton.setVisible(false);
+                filterDetailComboBox.setVisible(false);
+                filterTextField.setVisible(false);
+                this.pagina = 0;
+                actualizarBotones(pagina);
+                break;
+        }
+    }//GEN-LAST:event_filterComboBoxActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+            selectedItem = filterTextField.getText();
+            this.pagina = 0;
+            actualizarBotones(pagina);
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void filterTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filterTextFieldKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            selectedItem = filterTextField.getText();
+            this.pagina = 0;
+            actualizarBotones(pagina);
+        }
+    }//GEN-LAST:event_filterTextFieldKeyPressed
+
+    private void filterDetailComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterDetailComboBoxActionPerformed
+        selectedItem = (String) filterDetailComboBox.getSelectedItem();
+        this.pagina = 0;
+        actualizarBotones(pagina);
+    }//GEN-LAST:event_filterDetailComboBoxActionPerformed
+
+    private void reviewIconActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reviewIconActionPerformed
+        this.dispose();
+        ReviewProductos rp = new ReviewProductos(usuarioID);
+        rp.setVisible(true);
+    }//GEN-LAST:event_reviewIconActionPerformed
+
+    private void adminIconActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminIconActionPerformed
+        this.dispose();
+        AdminView av = new AdminView(usuarioID);
+        av.setVisible(true);
+    }//GEN-LAST:event_adminIconActionPerformed
 
     /**
      * @param args the command line arguments
@@ -288,7 +579,7 @@ public class HomeView extends javax.swing.JFrame {
     
     private void crearBotonesProductos() {
         int xInicial = 80; // Posición inicial x
-        int yInicial = 120; // Posición inicial y
+        int yInicial = 130; // Posición inicial y
         int anchoBoton = 150;
         int altoBoton = 150;
         int espacioEntreBotones = 10;
@@ -319,8 +610,68 @@ public class HomeView extends javax.swing.JFrame {
 
     private void actualizarBotones(int numPagina) {
         int index = 0;
-        productosPagina = DBMediator.getProductosPorPagina(numPagina);
-        int stillProducts = DBMediator.verificarProductosPorPagina(numPagina + 1);
+        switch(searchFilter){
+            case "Sin filtro activo.":
+                productosPagina = DBMediator.getProductosPorPagina(numPagina);
+                stillProducts = DBMediator.verificarProductosPorPagina(numPagina + 1);
+                break;
+            case "Filtrar por precio.":
+                if (selectedItem != null && !selectedItem.isEmpty()) {
+                    productosPagina = DBMediator.getProductosOrdenadosPorPrecio(selectedItem, numPagina);
+                    stillProducts = DBMediator.verificarProductosPorPagina(numPagina + 1);
+                } else {
+                    // Si no hay marca seleccionada, muestra un mensaje o usa un comportamiento por defecto
+                    productosPagina = new ArrayList<>();
+                    stillProducts = 0;
+                }
+                break;
+            case "Filtrar por popularidad.":
+                if (selectedItem != null && !selectedItem.isEmpty()) {
+                    productosPagina = DBMediator.getProductosOrdenadosPorReviews(selectedItem, numPagina);
+                    stillProducts = DBMediator.verificarProductosPorPagina(numPagina + 1);
+                } else {
+                    // Si no hay marca seleccionada, muestra un mensaje o usa un comportamiento por defecto
+                    productosPagina = new ArrayList<>();
+                    stillProducts = 0;
+                }
+                break;
+            case "Filtrar por marca.":
+                if (selectedItem != null && !selectedItem.isEmpty()) {
+                    productosPagina = DBMediator.getProductosPorMarcaPorPagina(selectedItem, numPagina);
+                    stillProducts = DBMediator.verificarProductosPorMarcaPorPagina(selectedItem, numPagina + 1);
+                } else {
+                    // Si no hay marca seleccionada, muestra un mensaje o usa un comportamiento por defecto
+                    productosPagina = new ArrayList<>();
+                    stillProducts = 0;
+                }
+                break;
+            case "Filtrar por categoría.":
+                if (selectedItem != null && !selectedItem.isEmpty()) {
+                    productosPagina = DBMediator.getProductosPorCategoriaPorPagina(selectedItem, numPagina);
+                    stillProducts = DBMediator.verificarProductosPorCategoriaPorPagina(selectedItem, numPagina + 1);
+                } else {
+                    // Si no hay marca seleccionada, muestra un mensaje o usa un comportamiento por defecto
+                    productosPagina = new ArrayList<>();
+                    stillProducts = 0;
+                }
+                break;
+            case "Filtrar por nombre.":
+                if (selectedItem != null && !selectedItem.isEmpty()) {
+                    productosPagina = DBMediator.getProductosPorNombrePorPagina(selectedItem, numPagina);
+                    stillProducts = DBMediator.verificarProductosPorNombrePorPagina(selectedItem, numPagina + 1);
+                } else {
+                    // Si no hay marca seleccionada, muestra un mensaje o usa un comportamiento por defecto
+                    productosPagina = new ArrayList<>();
+                    stillProducts = 0;
+                }
+                break;
+            case "Filtrar por descuento activo.":
+                productosPagina = DBMediator.getProductosConDescuentoPorPagina(pagina);
+                stillProducts = DBMediator.verificarProductosConDescuentoPorPagina(numPagina + 1);
+                break;            
+            default:
+                break;
+        }
 
         // Limpiar los íconos de descuento existentes de los botones
         for (JButton boton : botonesProductos.values()) {
@@ -423,11 +774,38 @@ public class HomeView extends javax.swing.JFrame {
         // Ejecutar el worker
         worker.execute();
     }
+    
+    private void inicializarFiltros(){
+        this.setLayout(null);
+        String rol = DBMediator.getRolPorUsuarioID(usuarioID);
+        if (rol.equals("Cliente")){
+            adminIcon.setVisible(false);
+        }
+        filterDetailComboBox.setBounds(selectLabel.getX(), selectLabel.getY() + 20,
+                filterDetailComboBox.getWidth(), filterDetailComboBox.getHeight());
+        filterTextField.setBounds(selectLabel.getX(), selectLabel.getY() + 20,
+                filterTextField.getWidth(), filterTextField.getHeight());
+        searchButton.setBounds(selectLabel.getX() + 240, selectLabel.getY() + 20 ,
+                searchButton.getWidth(), searchButton.getHeight());
+        filterDetailComboBox.setVisible(false);
+        searchButton.setVisible(false);
+        filterTextField.setVisible(false);
+        selectLabel.setVisible(false);
+    }
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton adminIcon;
     private javax.swing.JButton anteriorButton;
+    private javax.swing.JComboBox<String> filterComboBox;
+    private javax.swing.JComboBox<String> filterDetailComboBox;
+    private javax.swing.JLabel filterLabel;
+    private javax.swing.JTextField filterTextField;
     private javax.swing.JPopupMenu menuMomentaneo;
+    private javax.swing.JButton receiptIcon;
+    private javax.swing.JButton reviewIcon;
+    private javax.swing.JButton searchButton;
+    private javax.swing.JLabel selectLabel;
     private javax.swing.JButton shopIcon;
     private javax.swing.JButton siguienteButton;
     private javax.swing.JButton usuarioIcon;

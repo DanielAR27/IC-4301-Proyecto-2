@@ -94,6 +94,31 @@ public class DBMediator {
         }   
     }
     
+    public static String getRolPorUsuarioID(int usuarioID){
+        try{        
+             /*Establecer conexiones y ejecutar el query.*/
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetRolPorUsuarioID ?, ?";
+            CallableStatement statement = connection.prepareCall(sql); //crear statement
+            // Establecer los valores de los parámetros.
+            statement.setInt(1, usuarioID);
+             // Preparar para registrar el valor de salida.
+            statement.registerOutParameter(2, Types.NVARCHAR);        
+            
+            // Ejecutar la llamada al procedimiento.
+            statement.execute();
+            
+             // Recuperar el valor del parámetro de salida.
+            String resultado = statement.getString(2);
+            //Cerrar la conexión.
+            connection.close();
+            
+            return resultado; //Obtener el resultado.
+        }catch(SQLException ex){
+            return null;
+        }           
+    }
+    
     public static float getTotalCarrito(int usuarioID){
         try{        
              /*Establecer conexiones y ejecutar el query.*/
@@ -119,7 +144,7 @@ public class DBMediator {
             return -1;
         }   
     }
-
+    
     public static float getEnvioPorDireccionID(int direccionID){
         try{        
              /*Establecer conexiones y ejecutar el query.*/
@@ -198,7 +223,7 @@ public class DBMediator {
 
             // Iterar a través de los resultados y agregar los nombres a la lista
             while (resultSet.next()) {
-                paises.add(resultSet.getString("Nombre"));
+                paises.add(resultSet.getString(1));
             }
 
             // Cerrar la conexión
@@ -208,6 +233,55 @@ public class DBMediator {
         }
 
         return paises; // Retornar la lista de nombres de países
+    }
+     
+    public static List<String> getMarcas(){
+        List<String> marcas = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetMarcas";
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                marcas.add(resultSet.getString(1));
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            return null;
+        }
+
+        return marcas; // Retornar la lista de nombres de países        
+    }
+    
+    public static List<String> getCategorias(){
+        List<String> categorias = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetCategorias";
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                categorias.add(resultSet.getString(1));
+            }
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            return null;
+        }
+
+        return categorias; // Retornar la lista de nombres de países        
     }
      
     public static List<String> getEstadosPorPais(String nombrePais) {
@@ -319,7 +393,7 @@ public class DBMediator {
         
         return metodosPago;        
     }
-    
+        
     public static List<Object> getDireccionPorID(int direccionID){
         List<Object> direccionInfo = new ArrayList<>();
         try{
@@ -418,6 +492,226 @@ public class DBMediator {
         return productos; // Retornar la lista de estados/provincias
     }
 
+    /*TODO: PARÁMETRO 2. Se podría hacer que si devuelve null hacer un warning y cerrar la página.*/
+    public static List<List<Object>> getProductosOrdenadosPorPrecio(String orden, int pagina) {
+        List<List<Object>> productos = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetProductosOrdenadosPorPrecio ?, ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Establecer el valor del parámetro
+            statement.setString(1, orden);
+            statement.setInt(2, pagina);
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+                        
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> productoInfo = new ArrayList<>();
+                productoInfo.add(resultSet.getInt(1)); // Agregar el id del producto.
+                productoInfo.add(resultSet.getString(2)); // Agregar el nombre del producto.
+                productoInfo.add(resultSet.getFloat(3)); // Agregar el precio.
+                productoInfo.add(resultSet.getString(4)); // Agregar la imagen del producto.
+                productoInfo.add(resultSet.getString(5)); // Agregar etiqueta de si tiene un descuento ahora mismo.
+                productos.add(productoInfo);
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        return productos; // Retornar la lista de estados/provincias
+    }
+  
+    /*TODO: PARÁMETRO 2. Se podría hacer que si devuelve null hacer un warning y cerrar la página.*/
+    public static List<List<Object>> getProductosOrdenadosPorReviews(String orden, int pagina) {
+        List<List<Object>> productos = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetProductosOrdenadosPorReviews ?, ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Establecer el valor del parámetro
+            statement.setString(1, orden);
+            statement.setInt(2, pagina);
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+                        
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> productoInfo = new ArrayList<>();
+                productoInfo.add(resultSet.getInt(1)); // Agregar el id del producto.
+                productoInfo.add(resultSet.getString(2)); // Agregar el nombre del producto.
+                productoInfo.add(resultSet.getFloat(3)); // Agregar el precio.
+                productoInfo.add(resultSet.getString(4)); // Agregar la imagen del producto.
+                productoInfo.add(resultSet.getString(5)); // Agregar etiqueta de si tiene un descuento ahora mismo.
+                productos.add(productoInfo);
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        return productos; // Retornar la lista de estados/provincias
+    }
+  
+    
+    /*TODO: PARÁMETRO 2. Se podría hacer que si devuelve null hacer un warning y cerrar la página.*/
+    public static List<List<Object>> getProductosPorMarcaPorPagina(String marca, int pagina) {
+        List<List<Object>> productos = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetProductosPorMarcaPorPagina ?, ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Establecer el valor del parámetro
+            statement.setString(1, marca);
+            statement.setInt(2, pagina);
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+                        
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> productoInfo = new ArrayList<>();
+                productoInfo.add(resultSet.getInt(1)); // Agregar el id del producto.
+                productoInfo.add(resultSet.getString(2)); // Agregar el nombre del producto.
+                productoInfo.add(resultSet.getFloat(3)); // Agregar el precio.
+                productoInfo.add(resultSet.getString(4)); // Agregar la imagen del producto.
+                productoInfo.add(resultSet.getString(5)); // Agregar etiqueta de si tiene un descuento ahora mismo.
+                productos.add(productoInfo);
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        return productos; // Retornar la lista de estados/provincias
+    }
+    
+    /*TODO: PARÁMETRO 2. Se podría hacer que si devuelve null hacer un warning y cerrar la página.*/
+    public static List<List<Object>> getProductosPorCategoriaPorPagina(String categoria, int pagina) {
+        List<List<Object>> productos = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetProductosPorCategoriaPorPagina ?, ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Establecer el valor del parámetro
+            statement.setString(1, categoria);
+            statement.setInt(2, pagina);
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+                        
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> productoInfo = new ArrayList<>();
+                productoInfo.add(resultSet.getInt(1)); // Agregar el id del producto.
+                productoInfo.add(resultSet.getString(2)); // Agregar el nombre del producto.
+                productoInfo.add(resultSet.getFloat(3)); // Agregar el precio.
+                productoInfo.add(resultSet.getString(4)); // Agregar la imagen del producto.
+                productoInfo.add(resultSet.getString(5)); // Agregar etiqueta de si tiene un descuento ahora mismo.
+                productos.add(productoInfo);
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        return productos; // Retornar la lista de estados/provincias
+    }
+    
+    /*TODO: PARÁMETRO 2. Se podría hacer que si devuelve null hacer un warning y cerrar la página.*/
+    public static List<List<Object>> getProductosPorNombrePorPagina(String nombre, int pagina) {
+        List<List<Object>> productos = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetProductosPorNombrePorPagina ?, ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Establecer el valor del parámetro
+            statement.setString(1, nombre);
+            statement.setInt(2, pagina);
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+                        
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> productoInfo = new ArrayList<>();
+                productoInfo.add(resultSet.getInt(1)); // Agregar el id del producto.
+                productoInfo.add(resultSet.getString(2)); // Agregar el nombre del producto.
+                productoInfo.add(resultSet.getFloat(3)); // Agregar el precio.
+                productoInfo.add(resultSet.getString(4)); // Agregar la imagen del producto.
+                productoInfo.add(resultSet.getString(5)); // Agregar etiqueta de si tiene un descuento ahora mismo.
+                productos.add(productoInfo);
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        return productos; // Retornar la lista de estados/provincias
+    }
+    
+    public static List<List<Object>> getProductosConDescuentoPorPagina(int pagina) {
+        List<List<Object>> productos = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetProductosConDescuentoPorPagina ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Establecer el valor del parámetro
+            statement.setInt(1, pagina);
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+                        
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> productoInfo = new ArrayList<>();
+                productoInfo.add(resultSet.getInt(1)); // Agregar el id del producto.
+                productoInfo.add(resultSet.getString(2)); // Agregar el nombre del producto.
+                productoInfo.add(resultSet.getFloat(3)); // Agregar el precio.
+                productoInfo.add(resultSet.getString(4)); // Agregar la imagen del producto.
+                productoInfo.add(resultSet.getString(5)); // Agregar etiqueta de si tiene un descuento ahora mismo.
+                productos.add(productoInfo);
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            return null;
+        }
+
+        return productos; // Retornar la lista de estados/provincias
+    }
+    
     public static List<List<Object>> getProductosDeUsuarioPorPagina(int usuarioID, int pagina) {
         List<List<Object>> carritoCompra = new ArrayList<>();
         try {
@@ -457,6 +751,181 @@ public class DBMediator {
         return carritoCompra; // Retornar la lista de estados/provincias
     }
     
+    public static List<List<Object>>  getFacturasPorPagina(int usuarioID, int pagina){
+           List<List<Object>> facturas = new ArrayList<>();
+        try{
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetFacturasPorPagina ?, ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement            
+            
+            // Establecer el valor del parámetro
+            statement.setInt(1, usuarioID);
+            statement.setInt(2, pagina);
+                    
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();                    
+            
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> factura = new ArrayList<>();
+                factura.add(resultSet.getInt(1)); // Agregar el id de la factura.
+                factura.add(resultSet.getDate(2)); // Agregar la fecha de la factura.
+                factura.add(resultSet.getFloat(3)); // Agregar el total considerando descuentos.
+                factura.add(resultSet.getFloat(4)); // Agregar el costo de envío.
+                facturas.add(factura);
+            }
+
+            // Cerrar la conexión
+            connection.close();            
+        }catch (SQLException ex){
+            return null;
+        }        
+        return facturas;          
+    }
+    
+    
+    public static List<List<Object>> getDetallesFacturaPorPagina(int facturaID, int pagina){
+            List<List<Object>> lineasFacturas = new ArrayList<>();
+        try{
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetDetallesFacturaPorPagina ?, ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement            
+            
+            // Establecer el valor del parámetro
+            statement.setInt(1, facturaID);
+            statement.setInt(2, pagina);
+                    
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();                    
+            
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> lineaFactura = new ArrayList<>();
+                lineaFactura.add(resultSet.getInt(1)); // Agregar el id de la linea dea factura.
+                lineaFactura.add(resultSet.getInt(2)); // Agregar el id del producto.
+                lineaFactura.add(resultSet.getString(3)); // Agregar el nombre del producto.
+                lineaFactura.add(resultSet.getString(4)); // Agregar la descripción del producto.
+                lineaFactura.add(resultSet.getInt(5)); // Agregar la cantidad.
+                lineaFactura.add(resultSet.getFloat(6)); // Agregar el precio en el momento de la factura.
+                lineaFactura.add(resultSet.getFloat(7)); // Agregar el descuento aplicado en caso de haberlo.
+                lineaFactura.add(resultSet.getFloat(8)); // Agregar el total cobrado.
+                lineaFactura.add(resultSet.getString(9)); // Agregar el url de la imagen del producto.
+                lineasFacturas.add(lineaFactura);
+            }
+
+            // Cerrar la conexión
+            connection.close();            
+        }catch (SQLException ex){
+            return null;
+        }        
+        return lineasFacturas;          
+    }       
+    
+    public static List<List<Object>>  getProductosCompradosPorUsuario(int usuarioID, int pagina){
+           List<List<Object>> productosComprados = new ArrayList<>();
+        try{
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetProductosCompradosPorUsuario ?, ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement            
+            
+            // Establecer el valor del parámetro
+            statement.setInt(1, usuarioID);
+            statement.setInt(2, pagina);
+                    
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();                    
+            
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> producto = new ArrayList<>();
+                producto.add(resultSet.getInt(1)); // Agregar el id del producto.
+                producto.add(resultSet.getString(2)); // Agregar el nombre del producto.
+                producto.add(resultSet.getFloat(3)); // Agregar el costo del producto.
+                producto.add(resultSet.getString(4)); // Agregar la imagen del producto.
+                productosComprados.add(producto);
+            }
+
+            // Cerrar la conexión
+            connection.close();            
+        }catch (SQLException ex){
+            return null;
+        }        
+        return productosComprados;          
+    }    
+
+    public static List<List<Object>> getProductosConReviews(int pagina) {
+        List<List<Object>> productosConReviews = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetProductosConReviews ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Establecer el valor del parámetro
+            statement.setInt(1, pagina);
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+                        
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> productoInfo = new ArrayList<>();
+                productoInfo.add(resultSet.getInt(1)); // Agregar el id del producto.
+                productoInfo.add(resultSet.getString(2)); // Agregar el nombre del producto.
+                productoInfo.add(resultSet.getFloat(3)); // Agregar el precio.
+                productoInfo.add(resultSet.getString(4)); // Agregar la imagen del producto.
+                productosConReviews.add(productoInfo);
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            return null;
+        }
+
+        return productosConReviews; // Retornar la lista de estados/provincias
+    }
+    
+    public static List<List<Object>> getReviewsPorProducto(int productoID, int pagina) {
+        List<List<Object>> reviews = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetReviewsPorProducto ?, ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Establecer el valor del parámetro
+            statement.setInt(1, productoID);
+            statement.setInt(2, pagina);
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+                        
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> review = new ArrayList<>();
+                review.add(resultSet.getInt(1)); // Agregar el id del producto.
+                review.add(resultSet.getString(2)); // Agregar el nombre del usuario que hizo la review.
+                review.add(resultSet.getString(3)); // Agregar el apellido del usuario que hizo la review.
+                review.add(resultSet.getString(4)); // Agregar el correo del usuario que hizo la review.
+                review.add(resultSet.getInt(5)); // Agregar la calificación otorgada al producto.
+                review.add(resultSet.getString(6)); // Agregar el comentario que fue agregado.
+                reviews.add(review);
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        return reviews; // Retornar la lista de estados/provincias
+    }
+    
     public static int verificarProductosPorPagina(int pagina){
         try{
              /*Establecer conexiones y ejecutar el query.*/
@@ -485,6 +954,118 @@ public class DBMediator {
         }           
     }
 
+      public static int verificarProductosPorMarcaPorPagina(String marca, int pagina){
+        try{
+             /*Establecer conexiones y ejecutar el query.*/
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC  VerificarProductosPorMarcaPorPagina ?, ?, ?";
+            CallableStatement statement = connection.prepareCall(sql);//crear statement
+            // Establecer los valores de los parámetros
+            
+            statement.setString(1, marca);
+            statement.setInt(2, pagina); 
+            // Preparar para registrar el valor de salida
+            statement.registerOutParameter(3, Types.INTEGER);
+            
+            // Ejecutar la llamada al procedimiento
+            statement.execute();
+
+            // Recuperar el valor del parámetro de salida
+            int resultado = statement.getInt(3);
+            
+            //Cerrar la conexión.
+            connection.close();
+        
+            return resultado; //Obtener el resultado.
+        }catch(SQLException ex){
+            return -1;
+        }           
+    }
+
+    public static int verificarProductosPorCategoriaPorPagina(String categoria, int pagina){
+        try{
+             /*Establecer conexiones y ejecutar el query.*/
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC  VerificarProductosPorCategoriaPorPagina ?, ?, ?";
+            CallableStatement statement = connection.prepareCall(sql);//crear statement
+            // Establecer los valores de los parámetros
+            
+            statement.setString(1, categoria);
+            statement.setInt(2, pagina); 
+            // Preparar para registrar el valor de salida
+            statement.registerOutParameter(3, Types.INTEGER);
+            
+            // Ejecutar la llamada al procedimiento
+            statement.execute();
+
+            // Recuperar el valor del parámetro de salida
+            int resultado = statement.getInt(3);
+            
+            //Cerrar la conexión.
+            connection.close();
+        
+            return resultado; //Obtener el resultado.
+        }catch(SQLException ex){
+            return -1;
+        }           
+    }
+    
+    public static int verificarProductosPorNombrePorPagina(String nombre, int pagina){
+        try{
+             /*Establecer conexiones y ejecutar el query.*/
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC  VerificarProductosPorNombrePorPagina ?, ?, ?";
+            CallableStatement statement = connection.prepareCall(sql);//crear statement
+            // Establecer los valores de los parámetros
+            
+            statement.setString(1, nombre);
+            statement.setInt(2, pagina); 
+            // Preparar para registrar el valor de salida
+            statement.registerOutParameter(3, Types.INTEGER);
+            
+            // Ejecutar la llamada al procedimiento
+            statement.execute();
+
+            // Recuperar el valor del parámetro de salida
+            int resultado = statement.getInt(3);
+            
+            //Cerrar la conexión.
+            connection.close();
+        
+            return resultado; //Obtener el resultado.
+        }catch(SQLException ex){
+            return -1;
+        }           
+    }    
+    
+    public static int verificarProductosConDescuentoPorPagina(int pagina){
+        try{
+             /*Establecer conexiones y ejecutar el query.*/
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC VerificarProductosConDescuentoPorPagina ?, ?";
+            CallableStatement statement = connection.prepareCall(sql);//crear statement
+            // Establecer los valores de los parámetros
+            
+  
+            statement.setInt(1, pagina); 
+            // Preparar para registrar el valor de salida
+            statement.registerOutParameter(2, Types.INTEGER);
+            
+            // Ejecutar la llamada al procedimiento
+            statement.execute();
+
+            // Recuperar el valor del parámetro de salida
+            int resultado = statement.getInt(2);
+            
+            //Cerrar la conexión.
+            connection.close();
+        
+            return resultado; //Obtener el resultado.
+        }catch(SQLException ex){
+            return -1;
+        }           
+    }
+    
     public static int verificarProductosDeUsuarioPorPagina(int usuarioID, int pagina){
             try{
                  /*Establecer conexiones y ejecutar el query.*/
@@ -514,6 +1095,148 @@ public class DBMediator {
             }           
      }
 
+    public static int verificarFacturasPorPagina(int usuarioID, int pagina){
+            try{
+                 /*Establecer conexiones y ejecutar el query.*/
+                Connection connection = SQLConnection.getConnection();
+                String sql = "EXEC VerificarFacturasPorPagina ?, ?, ?";
+                CallableStatement statement = connection.prepareCall(sql);//crear statement
+                // Establecer los valores de los parámetros
+                statement.setInt(1, usuarioID);
+                statement.setInt(2, pagina);
+                // Preparar para registrar el valor de salida
+                statement.registerOutParameter(3, Types.INTEGER);
+
+                // Ejecutar la llamada al procedimiento
+                statement.execute();
+
+                // Recuperar el valor del parámetro de salida
+                int resultado = statement.getInt(3);
+                //Cerrar la conexión.
+                connection.close();
+
+                return resultado; //Obtener el resultado.
+            }catch(SQLException ex){
+                ex.printStackTrace();
+                return -1;
+            }           
+     }
+    
+    public static int verificarDetallesFacturaPorPagina(int facturaID, int pagina){
+            try{
+                 /*Establecer conexiones y ejecutar el query.*/
+                Connection connection = SQLConnection.getConnection();
+                String sql = "EXEC VerificarDetallesFacturaPorPagina ?, ?, ?";
+                CallableStatement statement = connection.prepareCall(sql);//crear statement
+                // Establecer los valores de los parámetros
+
+
+                statement.setInt(1, facturaID);
+                statement.setInt(2, pagina);
+                // Preparar para registrar el valor de salida
+                statement.registerOutParameter(3, Types.INTEGER);
+
+                // Ejecutar la llamada al procedimiento
+                statement.execute();
+
+                // Recuperar el valor del parámetro de salida
+                int resultado = statement.getInt(3);
+
+                //Cerrar la conexión.
+                connection.close();
+
+                return resultado; //Obtener el resultado.
+            }catch(SQLException ex){
+                return -1;
+            }           
+     }
+    
+    public static int verificarProductosCompradosPorUsuario(int usuarioID, int pagina){
+            try{
+                 /*Establecer conexiones y ejecutar el query.*/
+                Connection connection = SQLConnection.getConnection();
+                String sql = "EXEC VerificarProductosCompradosPorUsuario ?, ?, ?";
+                CallableStatement statement = connection.prepareCall(sql);//crear statement
+                // Establecer los valores de los parámetros
+
+
+                statement.setInt(1, usuarioID);
+                statement.setInt(2, pagina);
+                // Preparar para registrar el valor de salida
+                statement.registerOutParameter(3, Types.INTEGER);
+
+                // Ejecutar la llamada al procedimiento
+                statement.execute();
+
+                // Recuperar el valor del parámetro de salida
+                int resultado = statement.getInt(3);
+
+                //Cerrar la conexión.
+                connection.close();
+
+                return resultado; //Obtener el resultado.
+            }catch(SQLException ex){
+                return -1;
+            }           
+     }
+    
+    public static int verificarProductosConReviews(int pagina){
+        try{
+             /*Establecer conexiones y ejecutar el query.*/
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC VerificarProductosConReviews ?, ?";
+            CallableStatement statement = connection.prepareCall(sql);//crear statement
+            // Establecer los valores de los parámetros
+            
+  
+            statement.setInt(1, pagina); 
+            // Preparar para registrar el valor de salida
+            statement.registerOutParameter(2, Types.INTEGER);
+            
+            // Ejecutar la llamada al procedimiento
+            statement.execute();
+
+            // Recuperar el valor del parámetro de salida
+            int resultado = statement.getInt(2);
+            
+            //Cerrar la conexión.
+            connection.close();
+        
+            return resultado; //Obtener el resultado.
+        }catch(SQLException ex){
+            return -1;
+        }             
+    }
+    
+    public static int verificarReviewsPorProducto(int productoID, int pagina){
+            try{
+                 /*Establecer conexiones y ejecutar el query.*/
+                Connection connection = SQLConnection.getConnection();
+                String sql = "EXEC VerificarReviewsPorProducto ?, ?, ?";
+                CallableStatement statement = connection.prepareCall(sql);//crear statement
+                // Establecer los valores de los parámetros
+
+
+                statement.setInt(1, productoID);
+                statement.setInt(2, pagina);
+                // Preparar para registrar el valor de salida
+                statement.registerOutParameter(3, Types.INTEGER);
+
+                // Ejecutar la llamada al procedimiento
+                statement.execute();
+
+                // Recuperar el valor del parámetro de salida
+                int resultado = statement.getInt(3);
+
+                //Cerrar la conexión.
+                connection.close();
+
+                return resultado; //Obtener el resultado.
+            }catch(SQLException ex){
+                return -1;
+            }           
+     }
+    
     public static int procesarCompra(int usuarioID, float total, float envio){
             try{
                  /*Establecer conexiones y ejecutar el query.*/
@@ -797,6 +1520,37 @@ public class DBMediator {
             ex.printStackTrace();
             return -4;
         }
+    }
+    
+    public static int insertarReview(int usuarioID, int productoID, int calificacion, String comentario){
+        try{
+             /*Establecer conexiones y ejecutar el query.*/
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC  InsertarReview ?, ?, ?, ?, ?";
+            CallableStatement statement = connection.prepareCall(sql);//crear statement
+            // Establecer los valores de los parámetros
+            
+            statement.setInt(1, usuarioID);
+            statement.setInt(2, productoID); 
+            statement.setInt(3, calificacion);
+            statement.setString(4, comentario);
+            // Preparar para registrar el valor de salida
+            statement.registerOutParameter(5, Types.INTEGER);
+            
+            // Ejecutar la llamada al procedimiento
+            statement.execute();
+
+            // Recuperar el valor del parámetro de salida
+            int resultado = statement.getInt(5);
+            
+            //Cerrar la conexión.
+            connection.close();
+        
+            return resultado; //Obtener el resultado.            
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            return -2;
+        }        
     }
     
 }

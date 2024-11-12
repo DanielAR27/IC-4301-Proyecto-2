@@ -38,17 +38,14 @@ BEGIN
             RETURN;
         END
 
-        -- 3. Calcular el IVA total (por ejemplo, 13% del total)
-        SET @VatTotal = @Total * 0.13;
-
-        -- 4. Insertar la nueva factura
+        -- 3. Insertar la nueva factura
         INSERT INTO Facturas (UsuarioID, Total, CostoEnvio)
         VALUES (@UsuarioID, @Total, @Envio);
 
         SET @FacturaID = SCOPE_IDENTITY(); -- Obtener el ID de la factura recién insertada
 
-        -- 5. Mover productos a LineasFactura y actualizar stock
-        INSERT INTO LineasFactura (FacturaID, ProductoID, ProductoNombre, Linea, Cantidad, PrecioOriginal, LineaTotal)
+        -- 4. Mover productos a LineasFactura y actualizar stock
+        INSERT INTO LineasFactura (FacturaID, ProductoID, ProductoNombre, Linea, Cantidad, PrecioOriginal, DescuentoAplicado, LineaTotal)
         SELECT 
             @FacturaID,
             CP.ProductoID,
@@ -56,6 +53,7 @@ BEGIN
             CP.Linea,
             CP.Cantidad,
             CP.PrecioOriginal,
+			CP.DescuentoAplicado,
             CP.LineaTotal
         FROM CarritoProducto CP
         WHERE CP.CarritoID = @CarritoID;
@@ -67,11 +65,11 @@ BEGIN
         JOIN CarritoProducto CP ON P.ProductoID = CP.ProductoID
         WHERE CP.CarritoID = @CarritoID;
 
-        -- 6. Borrar los productos del carrito
+        -- 5. Borrar los productos del carrito
         DELETE FROM CarritoProducto
         WHERE CarritoID = @CarritoID;
 
-        -- 7. Actualizar el TotalCarrito en CarritoCompras
+        -- 6. Actualizar el TotalCarrito en CarritoCompras
         UPDATE CarritoCompras
         SET TotalCarrito = 0
         WHERE CarritoID = @CarritoID;

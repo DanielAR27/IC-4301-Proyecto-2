@@ -1,10 +1,9 @@
 USE DB_Proyecto;
-CREATE PROCEDURE GetPaises
+GO
+CREATE OR ALTER PROCEDURE GetPaises
 AS
 BEGIN
     SELECT Nombre
     FROM Paises;
 END;
-
-
-EXEC GetPaises
+GO

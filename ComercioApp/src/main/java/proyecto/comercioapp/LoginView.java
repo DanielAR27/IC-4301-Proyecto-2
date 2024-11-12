@@ -1,5 +1,6 @@
 package proyecto.comercioapp;
 
+import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import proyecto.db.DBMediator;
 import proyecto.utils.CheckUtils;
@@ -50,6 +51,11 @@ public class LoginView extends javax.swing.JFrame {
 
         passwordField.setBackground(new java.awt.Color(255, 255, 255));
         passwordField.setForeground(new java.awt.Color(0, 0, 0));
+        passwordField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                passwordFieldKeyPressed(evt);
+            }
+        });
 
         acceptButton.setText("Aceptar");
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
@@ -178,6 +184,49 @@ public class LoginView extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_acceptButtonActionPerformed
+
+    private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
+         if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            try{
+                String email = emailTextField.getText();
+                String password = new String (passwordField.getPassword());
+                String passwordEncrypted = DBMediator.getPassword(email);
+
+                 // Verificar si el email es válido
+                if (!CheckUtils.isValidEmail(email)) {
+                    JOptionPane.showMessageDialog(this, "Verifique que el correo sea válido.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    return; // Detener la ejecución si el email es inválido
+                }
+
+                // Verificar si la contraseña es válida
+                if(!CheckUtils.isPasswordValid(password)){
+                    JOptionPane.showMessageDialog(this, "Verifique que la contraseña tenga más de 5 caracteres.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    return; // Detener la ejecución si la contraseña es inválida
+                }
+
+                 // Verificar que se haya recuperado una contraseña.
+                if (passwordEncrypted == null) {
+                    JOptionPane.showMessageDialog(this, "Verifique que el correo ingresado exista.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    return; // Detener la ejecución si no se retorna contraseña
+                }
+
+                if(!CheckUtils.checkPassword(password, passwordEncrypted)){
+                    JOptionPane.showMessageDialog(this, "La contraseña no es correcta, intente de nuevo.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    return; // Detener la ejecución si no se retorna contraseña                
+                }else{
+                    int usuarioID = DBMediator.getUserID(email);
+                    this.dispose();
+                    HomeView home = new HomeView(usuarioID);
+                    home.setVisible(true);                    
+                }
+
+            }catch (Exception e){
+                e.printStackTrace();
+               JOptionPane.showMessageDialog(this, "Se ha producido un error, intente de nuevo por favor.", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                return; // Detener la ejecución si la contraseña es inválida
+            }
+        }
+    }//GEN-LAST:event_passwordFieldKeyPressed
 
     /**
      * @param args the command line arguments

@@ -63,7 +63,7 @@ CREATE TABLE Facturas (
 );
 
 CREATE TABLE LineasFactura (
-    LineaFactura INT PRIMARY KEY IDENTITY (1,1),                         -- Identificador único de la línea de factura
+    LineaFacturaID INT PRIMARY KEY IDENTITY (1,1),                         -- Identificador único de la línea de factura
     FacturaID INT NOT NULL FOREIGN KEY REFERENCES Facturas(FacturaID) ON DELETE CASCADE, -- Relación con Factura
     ProductoID INT NOT NULL FOREIGN KEY REFERENCES Productos(ProductoID), -- Identificador del producto comprado
     ProductoNombre NVARCHAR(100) NOT NULL,                         -- Nombre del producto al momento de la compra
