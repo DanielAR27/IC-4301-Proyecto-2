@@ -50,6 +50,7 @@ public class EndShop extends javax.swing.JFrame {
         returnButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Finalizar Compra");
         setResizable(false);
 
         PayPanel.setBackground(new java.awt.Color(153, 204, 255));

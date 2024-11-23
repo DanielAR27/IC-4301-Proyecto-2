@@ -32,15 +32,6 @@ BEGIN
         -- Verificar si la eliminación afectó alguna fila
         IF @@ROWCOUNT > 0
         BEGIN
-            -- Actualizar el TotalCarrito en CarritoCompras
-            UPDATE CarritoCompras
-            SET TotalCarrito = (
-                SELECT ISNULL(SUM(LineaTotal), 0)
-                FROM CarritoProducto
-                WHERE CarritoID = @CarritoID
-            )
-            WHERE CarritoID = @CarritoID;
-
             SET @Resultado = 0; -- Indica éxito en la eliminación
             COMMIT TRANSACTION; -- Confirmar la transacción
         END
@@ -60,3 +51,8 @@ BEGIN
     END CATCH
 END;
 GO
+
+
+SELECT DISTINCT LF.ProductoID, P.Nombre
+FROM LineasFactura LF
+INNER JOIN Productos P ON LF.ProductoID = P.ProductoID

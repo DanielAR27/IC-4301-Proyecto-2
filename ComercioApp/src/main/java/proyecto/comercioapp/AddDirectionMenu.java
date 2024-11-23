@@ -70,37 +70,46 @@ public class AddDirectionMenu extends javax.swing.JFrame {
         paisLabel.setText("País");
 
         List<String> paises = DBMediator.getPaises();
-        paisesComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(paises.toArray(new String[0])));
         paisesComboBox.setMaximumRowCount(5);
+        if(paises != null && !paises.isEmpty()){
+            paisesComboBox.setModel(new DefaultComboBoxModel<>(paises.toArray(new String[0])));
+            paisesComboBox.setSelectedIndex(0); // Seleccionar el primer país por defecto
+        } else {
+            paisesComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "No hay países disponibles" }));
+        }
+
         // Agregar un ActionListener al comboBox de países
         paisesComboBox.addActionListener(e -> {
-            // Obtener el país seleccionado
             String paisSeleccionado = (String) paisesComboBox.getSelectedItem();
 
             if (paisSeleccionado != null) {
-                // Obtener la lista de estados asociados al país seleccionado
                 List<String> estados = DBMediator.getEstadosPorPais(paisSeleccionado);
 
-                // Actualizar el comboBox de estados
                 if (estados != null && !estados.isEmpty()) {
                     estadosComboBox.setModel(new DefaultComboBoxModel<>(estados.toArray(new String[0])));
                 } else {
                     estadosComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "No hay estados disponibles" }));
                 }
-            }
-        });
-        paisesComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                paisesComboBoxActionPerformed(evt);
+            } else {
+                estadosComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Seleccione un país" }));
             }
         });
 
         estadoLabel.setForeground(new java.awt.Color(0, 0, 0));
         estadoLabel.setText("Estado / Provincia");
 
-        List<String> estadosDeCostaRica = DBMediator.getEstadosPorPais("Costa Rica");
-        estadosComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(estadosDeCostaRica.toArray(new String[0])));
         estadosComboBox.setMaximumRowCount(5);
+        String paisSeleccionado = (String) paisesComboBox.getSelectedItem();
+        if(paisSeleccionado != null){
+            List<String> estados = DBMediator.getEstadosPorPais(paisSeleccionado);
+            if(estados != null && !estados.isEmpty()){
+                estadosComboBox.setModel(new DefaultComboBoxModel<>(estados.toArray(new String[0])));
+            }else{
+                estadosComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "No hay estados disponibles" }));
+            }
+        }else{
+            estadosComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Seleccione un país" }));
+        }
 
         ciudadLabel.setForeground(new java.awt.Color(0, 0, 0));
         ciudadLabel.setText("Ciudad");
@@ -213,10 +222,6 @@ public class AddDirectionMenu extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void paisesComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paisesComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_paisesComboBoxActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         int respuesta = JOptionPane.showConfirmDialog(this, 

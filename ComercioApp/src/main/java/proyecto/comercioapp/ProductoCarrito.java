@@ -25,20 +25,24 @@ public class ProductoCarrito extends javax.swing.JDialog {
     private Float descuento;
     private int productosContador;
     private String descuentoURL = "https://i.ibb.co/4tMXLwq/descuento-img.png";
-
+    private Boolean productoCambiado = false;
+    private HomeView parent;
+    
     public ProductoCarrito(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
  
-     public ProductoCarrito(java.awt.Frame parent, boolean modal, int usuarioID, int productoID) {
+     public ProductoCarrito(HomeView parent, boolean modal, int usuarioID, int productoID) {
         super(parent, modal);
-        llenarAtributos(DBMediator.getProductoInfo(productoID));
-        initComponents();
-        actualizarLabels();
-        this.setTitle("Producto #" + productoID);
+        this.parent = parent;
         this.usuarioID = usuarioID;
         this.productoID = productoID;
+        initComponents();
+        actualizarLabels(productoCambiado);
+        this.setTitle("Producto #" + productoID);
+        this.setLayout(null);
+
     }
     
 
@@ -51,6 +55,7 @@ public class ProductoCarrito extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         extraLabel = new javax.swing.JLabel();
         infoGeneralLabel = new javax.swing.JLabel();
         lessButton = new javax.swing.JButton();
@@ -59,9 +64,27 @@ public class ProductoCarrito extends javax.swing.JDialog {
         cantidadLabel = new javax.swing.JLabel();
         iconLabel = new javax.swing.JLabel();
         addToCarButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
+        modifyButton = new javax.swing.JButton();
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                productoCarritoClosedAction(evt);
+            }
+        });
 
         extraLabel.setText("INFO EXTRA");
 
@@ -89,51 +112,24 @@ public class ProductoCarrito extends javax.swing.JDialog {
         iconLabel.setText(null);
         iconLabel.setLayout(null); // Usar un layout absoluto para permitir la posición manual de los componentes
 
-        try {
-            // Convertir la URL del String a un objeto URL
-            URL imageUrl = new URL(img);
-
-            // Crear un ImageIcon a partir de la URL
-            ImageIcon imageIcon = new ImageIcon(imageUrl);
-
-            // Asignar la imagen al JLabel
-            iconLabel.setIcon(imageIcon);
-
-            // Alinear la imagen al centro
-            iconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-            iconLabel.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
-            iconLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4)); // Borde negro de 4 píxeles de grosor
-
-            // Verificar si "descuento" es distinto de 0
-            if (descuento != 0) {
-                // Crear un JLabel para la imagen de la etiqueta de descuento
-                JLabel descuentoLabel = new JLabel();
-                URL descuentoUrl = new URL(descuentoURL); // URL de la imagen de descuento
-                ImageIcon descuentoIcon = new ImageIcon(descuentoUrl);
-
-                descuentoLabel.setIcon(descuentoIcon);
-
-                // Configurar un tamaño y posición fijos para probar
-                int iconLabelWidth = 150; // Ajusta el tamaño de prueba del JLabel
-                int iconLabelHeight = 150; // Ajusta el tamaño de prueba del JLabel
-                iconLabel.setSize(iconLabelWidth, iconLabelHeight); // Asegurarte de que tenga un tamaño fijo
-
-                // Posicionar el label de descuento en la esquina superior derecha
-                descuentoLabel.setBounds(iconLabelWidth - descuentoIcon.getIconWidth() + 3, 5, descuentoIcon.getIconWidth(), descuentoIcon.getIconHeight());
-
-                // Añadir el label de descuento al iconLabel
-                iconLabel.add(descuentoLabel);
-                descuentoLabel.setVisible(true);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         addToCarButton.setText("Agregar al Carrito");
         addToCarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addToCarButtonActionPerformed(evt);
+            }
+        });
+
+        deleteButton.setText("Eliminar Producto");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
+
+        modifyButton.setText("Modificar Producto");
+        modifyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifyButtonActionPerformed(evt);
             }
         });
 
@@ -159,9 +155,13 @@ public class ProductoCarrito extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(extraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(addToCarButton)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(addToCarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(modifyButton)))
+                .addGap(17, 17, 17))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,7 +169,7 @@ public class ProductoCarrito extends javax.swing.JDialog {
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(infoGeneralLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(infoGeneralLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cantidadTextLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -182,7 +182,11 @@ public class ProductoCarrito extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(extraLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 77, Short.MAX_VALUE)
+                        .addGap(0, 17, Short.MAX_VALUE)
+                        .addComponent(modifyButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addToCarButton)))
                 .addContainerGap())
         );
@@ -191,7 +195,7 @@ public class ProductoCarrito extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void moreButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moreButtonActionPerformed
-        if (productosContador < stock){
+        if (productosContador < 99){
             productosContador += 1;
             cantidadLabel.setText(Integer.toString(productosContador));
         }
@@ -215,12 +219,54 @@ public class ProductoCarrito extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Se ha agregado " + productosContador + " existencias del producto al carrito exitosamente.",
                         "Notificación", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
-            }default ->{
+            }case -1 ->{
                 JOptionPane.showMessageDialog(this, "Ha ocurrido un error, intente de nuevo porfavor.", "Advertencia", JOptionPane.ERROR_MESSAGE);
                 return;                
+            }default ->{
+                JOptionPane.showMessageDialog(this, "La cantidad solicitada supera el stock disponible, intente de nuevo porfavor.", "Advertencia", JOptionPane.ERROR_MESSAGE);
+                return;                     
             }
         }
     }//GEN-LAST:event_addToCarButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+            int respuesta = JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro de eliminar el producto \"" + productoNombre + "\"?\nEsta acción es irreversible.",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+
+            if (respuesta == JOptionPane.YES_OPTION) {
+                int resultado = DBMediator.eliminarProducto(productoID);
+                switch (resultado) {
+                    case 0 ->{
+                        JOptionPane.showMessageDialog(this, "Producto eliminado con éxito.", "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                        productoCambiado = true;
+                        this.dispose();
+                    }case -1 ->{
+                        JOptionPane.showMessageDialog(this, "El producto está asociado a una factura, intente con otro.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }default ->{
+                        JOptionPane.showMessageDialog(this, "Error al eliminar el producto.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+           }
+    }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void modifyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyButtonActionPerformed
+        AddProducto ap = new AddProducto(this, true, productoID);
+        ap.setVisible(true);
+    }//GEN-LAST:event_modifyButtonActionPerformed
+
+    private void productoCarritoClosedAction(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_productoCarritoClosedAction
+        if (productoCambiado){
+            JOptionPane.showMessageDialog(this, "Se ha detectado cambios en un producto, se reiniciará la pantalla de home.",
+                    "Notificación", JOptionPane.INFORMATION_MESSAGE);            
+            parent.resetearPagina();
+            parent.actualizarBotones(0);
+        }
+    }//GEN-LAST:event_productoCarritoClosedAction
 
     /**
      * @param args the command line arguments
@@ -278,43 +324,137 @@ public class ProductoCarrito extends javax.swing.JDialog {
         descuento = (Float) productoInfo.get(9);
     }
     
-private void actualizarLabels() {
-    String contenidoExtra = "<html>"
-            + "<b>Descripción:</b> " + productoDescripcion + "<br>"
-            + "<b>Marca:</b> " + marca + "<br>"
-            + "<b>Categoría:</b> " + categoria
-            + "</html>";
-    
-    String contenidoInfo = "<html>"
-            + "<b>Nombre:</b> " + productoNombre + "<br>"
-            + "<b>Precio Unitario:</b> £" + precio + "<br>";
-    
-    if (descuento > 0){
-        float dineroAhorrado = descuento/100 * precio;
-        contenidoInfo += "<b>Descuento Aplicado:</b> £ -" + dineroAhorrado + "<br>";
-        contenidoInfo += "<b>Precio Final:</b> £ " + (precio - dineroAhorrado) + "<br>";
-    }else{
-        contenidoInfo += "<b>Precio Final:</b> £ " + (precio) + "<br>";
-    }
-    
-    
-    if (reviews > 0) {
-        contenidoInfo += "<b>Calificación Promedio:</b> " + calificacionPromedio + " ✩<br>";
-    }
-    contenidoInfo += "</html>";  // Cerrar la etiqueta HTML solo al final
-    
-    extraLabel.setText(contenidoExtra);
-    infoGeneralLabel.setText(contenidoInfo);
-}
+    public final void actualizarLabels(boolean productoCambiado) {        
+        llenarAtributos(DBMediator.getProductoInfo(productoID));            
+        // Una flag para ver si el producto cambió.
+        this.productoCambiado = productoCambiado;
+        String rol = DBMediator.getRolPorUsuarioID(usuarioID);
 
+        if (rol.equals("Cliente")){
+           modifyButton.setVisible(false);
+           deleteButton.setVisible(false);
+        }else{
+            modifyButton.setBounds(addToCarButton.getX(), modifyButton.getY(), modifyButton.getWidth(), modifyButton.getHeight());
+            deleteButton.setBounds(addToCarButton.getX(), deleteButton.getY(), deleteButton.getWidth(), deleteButton.getHeight());        
+        }  
+
+        if (stock <= 2 && rol.equals("Administrador")){
+            JOptionPane.showMessageDialog(this, "El stock de este producto se encuentra bajo.",
+                    "Advertencia", JOptionPane.WARNING_MESSAGE);                 
+        }
+        
+        configurarImagenProducto();
+        
+        String contenidoExtra = "<html>"
+                + "<b>Descripción:</b> " + productoDescripcion + "<br>"
+                + "<b>Marca:</b> " + marca + "<br>"
+                + "<b>Categoría:</b> " + categoria  + "<br>"
+                + "<b>Stock: </b>" + stock
+                + "</html>";
+
+        String contenidoInfo = "<html>"
+                + "<b>Nombre:</b> " + productoNombre + "<br>"
+                + "<b>Precio Unitario:</b> £" + precio + "<br>";
+
+        if (descuento > 0){
+            float dineroAhorrado = descuento/100 * precio;
+            contenidoInfo += "<b>Descuento Aplicado:</b> £ -" + dineroAhorrado + "<br>";
+            contenidoInfo += "<b>Precio Final:</b> £ " + (precio - dineroAhorrado) + "<br>";
+        }else{
+            contenidoInfo += "<b>Precio Final:</b> £ " + (precio) + "<br>";
+        }
+
+
+        if (reviews > 0) {
+            contenidoInfo += "<b>Calificación Promedio:</b> " + calificacionPromedio + " ✩<br>";
+        }
+        contenidoInfo += "</html>";  // Cerrar la etiqueta HTML solo al final
+
+        extraLabel.setText(contenidoExtra);
+        infoGeneralLabel.setText(contenidoInfo);
+    }
+
+private void configurarImagenProducto() {
+    iconLabel.setText(null);
+    iconLabel.setLayout(null); // Usar un diseño absoluto para posicionar componentes manualmente
+
+    try {
+        // Comprobar si imgUrl no es null ni vacío
+        if (img != null && !img.trim().isEmpty()) {
+            // Crear un ImageIcon a partir de la URL
+            URL imageUrl = new URL(img);
+            ImageIcon imageIcon = new ImageIcon(imageUrl);
+
+            // Asignar la imagen al JLabel
+            iconLabel.setIcon(imageIcon);
+
+            // Alinear la imagen al centro
+            iconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            iconLabel.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+            iconLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4)); // Borde negro
+
+            // Si hay descuento, agregar el ícono del descuento
+            if (descuento != 0) {
+                JLabel descuentoLabel = new JLabel();
+                URL descuentoImageUrl = new URL(descuentoURL); // URL de la imagen de descuento
+                ImageIcon descuentoIcon = new ImageIcon(descuentoImageUrl);
+
+                descuentoLabel.setIcon(descuentoIcon);
+
+                // Configurar tamaño del iconLabel si no lo tiene
+                int iconLabelWidth = 150; // Ajustar tamaño
+                int iconLabelHeight = 150;
+                iconLabel.setSize(iconLabelWidth, iconLabelHeight);
+
+                // Posicionar el label de descuento en la esquina superior derecha
+                descuentoLabel.setBounds(iconLabelWidth - descuentoIcon.getIconWidth() - 5, 5, 
+                                         descuentoIcon.getIconWidth(), descuentoIcon.getIconHeight());
+
+                // Añadir el label de descuento al iconLabel
+                iconLabel.add(descuentoLabel);
+                descuentoLabel.setVisible(true);
+            }
+        } else {
+            // Si no se cargó la imagen, usar la imagen de fallback
+            URL fallbackUrl = new URL("https://i.ibb.co/VM6PNKG/missigno.png");
+            ImageIcon fallbackIcon = new ImageIcon(fallbackUrl);
+            iconLabel.setIcon(fallbackIcon);
+            iconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            iconLabel.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+            iconLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // Borde negro
+        }
+    } catch (Exception e) {
+        try {
+            // Si ocurre un error, usar la imagen de fallback
+            URL fallbackUrl = new URL("https://i.ibb.co/VM6PNKG/missigno.png");
+            ImageIcon fallbackIcon = new ImageIcon(fallbackUrl);
+            iconLabel.setIcon(fallbackIcon);
+            iconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            iconLabel.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+            iconLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // Borde negro
+        } catch (Exception fallbackException) {
+            fallbackException.printStackTrace();
+            // Si incluso el fallback falla, muestra un texto de error
+            iconLabel.setIcon(null);
+            iconLabel.setText("Error al cargar imagen");
+            iconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            iconLabel.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+            iconLabel.setBorder(BorderFactory.createLineBorder(Color.RED, 2)); // Borde rojo para errores graves
+        }
+    }
+}
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addToCarButton;
     private javax.swing.JLabel cantidadLabel;
     private javax.swing.JLabel cantidadTextLabel;
+    private javax.swing.JButton deleteButton;
     private javax.swing.JLabel extraLabel;
     private javax.swing.JLabel iconLabel;
     private javax.swing.JLabel infoGeneralLabel;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton lessButton;
+    private javax.swing.JButton modifyButton;
     private javax.swing.JButton moreButton;
     // End of variables declaration//GEN-END:variables
 }

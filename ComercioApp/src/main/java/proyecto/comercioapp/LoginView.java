@@ -1,6 +1,7 @@
 package proyecto.comercioapp;
 
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import proyecto.db.DBMediator;
 import proyecto.utils.CheckUtils;
@@ -219,9 +220,10 @@ public class LoginView extends javax.swing.JFrame {
                     HomeView home = new HomeView(usuarioID);
                     home.setVisible(true);                    
                 }
-
+            }catch (NullPointerException npe){
+               JOptionPane.showMessageDialog(this, "No se ha podido establecer conexión con la base de datos, intente de nuevo más tarde.", "Advertencia", JOptionPane.ERROR_MESSAGE);                
+               System.exit(0);
             }catch (Exception e){
-                e.printStackTrace();
                JOptionPane.showMessageDialog(this, "Se ha producido un error, intente de nuevo por favor.", "Advertencia", JOptionPane.ERROR_MESSAGE);
                 return; // Detener la ejecución si la contraseña es inválida
             }

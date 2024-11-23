@@ -29,17 +29,6 @@ BEGIN
         INSERT INTO Reviews (UsuarioID, ProductoID, Calificacion, Comentario)
         VALUES (@UsuarioID, @ProductoID, @Calificacion, @Comentario);
 
-        -- Calcular el promedio de las calificaciones para el ProductoID
-        DECLARE @NuevoPromedio FLOAT;
-        SELECT @NuevoPromedio = AVG(CAST(Calificacion AS FLOAT))
-        FROM Reviews
-        WHERE ProductoID = @ProductoID;
-
-        -- Actualizar la columna CalificacionPromedio en la tabla Productos
-        UPDATE Productos
-        SET CalificacionPromedio = @NuevoPromedio
-        WHERE ProductoID = @ProductoID;
-
         -- Establecer el resultado como exitoso
         SET @Resultado = 1;
         

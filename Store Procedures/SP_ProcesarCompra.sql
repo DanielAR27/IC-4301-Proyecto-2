@@ -58,7 +58,7 @@ BEGIN
         FROM CarritoProducto CP
         WHERE CP.CarritoID = @CarritoID;
 
-        -- Actualizar el stock de los productos
+        -- Actualizar el stock de los productos (Ver si se puede hacer con un trigger)
         UPDATE P
         SET P.Stock = P.Stock - CP.Cantidad
         FROM Productos P
@@ -67,11 +67,6 @@ BEGIN
 
         -- 5. Borrar los productos del carrito
         DELETE FROM CarritoProducto
-        WHERE CarritoID = @CarritoID;
-
-        -- 6. Actualizar el TotalCarrito en CarritoCompras
-        UPDATE CarritoCompras
-        SET TotalCarrito = 0
         WHERE CarritoID = @CarritoID;
 
         -- Indicar que la transacción fue exitosa

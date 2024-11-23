@@ -12,7 +12,7 @@ public class SQLConnection {
                 + "password='8WOcnFn<18+;"
                 + "encrypt=false;"
                 + "trustServerCertificate=false;"
-                + "loginTimeout=30;";    
+                + "loginTimeout=30;";     
     public static Connection getConnection(){
         try {
             Connection connection;

@@ -8,7 +8,8 @@ CREATE TABLE Usuarios (
     Password NVARCHAR(255) NOT NULL,        
     Telefono NVARCHAR(15),
     FechaNacimiento DATE,                    
-    FechaRegistro DATE DEFAULT GETDATE(),      
+    FechaRegistro DATE DEFAULT GETDATE(),
+    Rol NVARCHAR(50) NOT NULL      
 );
 
 CREATE TABLE CarritoCompras (
@@ -32,14 +33,17 @@ CREATE TABLE Estados_Provincias (
 
 CREATE TABLE Direcciones (
     DireccionID INT PRIMARY KEY IDENTITY (1,1),                 -- Identificador único de la dirección
-    UsuarioID INT FOREIGN KEY REFERENCES Usuarios(UsuarioID) ON DELETE CASCADE, -- FK a Usuarios
-    PaisID INT FOREIGN KEY REFERENCES Paises(PaisID),     -- FK a Países
-    EstadoProvinciaID INT FOREIGN KEY REFERENCES Estados_Provincias(EstadoProvinciaID), -- FK a Estados_Provincias
+    UsuarioID INT NOT NULL, -- FK a Usuarios
+    PaisID INT NOT NULL,     -- FK a Países
+    EstadoProvinciaID INT NOT NULL, -- FK a Estados_Provincias
     DireccionLinea1 NVARCHAR(255) NOT NULL,               -- Primera línea de dirección (calle, número)
     DireccionLinea2 NVARCHAR(255),                        -- Segunda línea de dirección (opcional)
     Ciudad NVARCHAR(100) NOT NULL,                        -- Ciudad
     CodigoPostal NVARCHAR(20) NOT NULL,                   -- Código postal
     Contacto NVARCHAR(15) NOT NULL                        -- Número de contacto (teléfono)
+	CONSTRAINT FK_Direcciones_Usuarios FOREIGN KEY (UsuarioID) REFERENCES Usuarios(UsuarioID) ON DELETE CASCADE,
+    CONSTRAINT FK_Direcciones_Paises FOREIGN KEY (PaisID) REFERENCES Paises(PaisID) ON DELETE NO ACTION,
+    CONSTRAINT FK_Direcciones_Estados FOREIGN KEY (EstadoProvinciaID) REFERENCES Estados_Provincias(EstadoProvinciaID) ON DELETE NO ACTION,
 );
 
 CREATE TABLE MetodoPago (
@@ -56,22 +60,26 @@ CREATE TABLE MetodoPago (
 
 CREATE TABLE Facturas (
     FacturaID INT PRIMARY KEY IDENTITY (1,1),                   -- Identificador único de la factura
-    UsuarioID INT NOT NULL FOREIGN KEY REFERENCES Usuarios(UsuarioID), -- Relación con el usuario
+    UsuarioID INT NOT NULL FOREIGN KEY REFERENCES Usuarios(UsuarioID) ON DELETE CASCADE, -- Relación con el usuario
     FechaFactura DATE DEFAULT GETDATE(),                  -- Fecha de la factura (fecha de compra)
     Total DECIMAL(10, 2) NOT NULL CHECK (Total >= 0), -- Monto total con descuentos aplicados
-	CostoEnvio DECIMAL(10, 2) NOT NULL CHECK (CostoEnvio >= 0)
+    CostoEnvio DECIMAL(10, 2) NOT NULL CHECK (CostoEnvio >= 0),
+	Estado NVARCHAR(50) NOT NULL DEFAULT 'Pendiente'
 );
+
 
 CREATE TABLE LineasFactura (
     LineaFacturaID INT PRIMARY KEY IDENTITY (1,1),                         -- Identificador único de la línea de factura
     FacturaID INT NOT NULL FOREIGN KEY REFERENCES Facturas(FacturaID) ON DELETE CASCADE, -- Relación con Factura
-    ProductoID INT NOT NULL FOREIGN KEY REFERENCES Productos(ProductoID), -- Identificador del producto comprado
+    ProductoID INT NOT NULL, -- Identificador del producto comprado
     ProductoNombre NVARCHAR(100) NOT NULL,                         -- Nombre del producto al momento de la compra
     Linea INT NOT NULL,                                            -- Orden de la línea en la factura
     Cantidad DECIMAL(10, 2) NOT NULL CHECK (Cantidad > 0),         -- Cantidad de producto comprado
     PrecioOriginal DECIMAL(10, 2) NOT NULL CHECK (PrecioOriginal >= 0), -- Precio del producto sin descuento
     DescuentoAplicado DECIMAL(5, 2) DEFAULT 0 CHECK (DescuentoAplicado BETWEEN 0 AND 100), -- % de descuento
     LineaTotal DECIMAL(10, 2) NOT NULL CHECK (LineaTotal >= 0)     -- Total de la línea con descuento aplicado
+    -- Definición de claves foráneas con nombres bonitos y ON DELETE CASCADE
+    CONSTRAINT FK_LineasFactura_Productos FOREIGN KEY (ProductoID) REFERENCES Productos(ProductoID) ON DELETE NO ACTION
 );
 
 CREATE TABLE Marcas (
@@ -85,17 +93,22 @@ CREATE TABLE Categorias (
 );
 
 CREATE TABLE Productos (
-    ProductoID INT PRIMARY KEY IDENTITY (1,1),          
-    Nombre NVARCHAR(100) NOT NULL,                
-    Descripcion NVARCHAR(500),                    
-    Precio DECIMAL(10, 2) NOT NULL,               
-    Stock DECIMAL(10, 2) NOT NULL CHECK (Stock >= 0), 
-    CategoriaID INT FOREIGN KEY REFERENCES Categorias(CategoriaID),
-    MarcaID INT FOREIGN KEY REFERENCES Marcas(MarcaID),
+    ProductoID INT PRIMARY KEY IDENTITY (1,1),
+    Nombre NVARCHAR(100) NOT NULL,
+    Descripcion NVARCHAR(500),
+    Precio DECIMAL(10, 2) NOT NULL,
+    Stock DECIMAL(10, 2) NOT NULL CHECK (Stock >= 0),
+    CategoriaID INT NOT NULL,
+    MarcaID INT NOT NULL,
     CalificacionPromedio DECIMAL(3, 2) DEFAULT 0.0 CHECK (CalificacionPromedio BETWEEN 0 AND 5), -- Rango de 0.00 a 5.00
-    FechaAgregado DATE DEFAULT GETDATE(),         
-    Imagen NVARCHAR(255)
+    FechaAgregado DATE DEFAULT GETDATE(),
+    Imagen NVARCHAR(255) NOT NULL,
+    
+    -- Definición de claves foráneas con nombres bonitos y ON DELETE NO ACTION
+    CONSTRAINT FK_Productos_Categorias FOREIGN KEY (CategoriaID) REFERENCES Categorias(CategoriaID) ON DELETE NO ACTION,
+    CONSTRAINT FK_Productos_Marcas FOREIGN KEY (MarcaID) REFERENCES Marcas(MarcaID) ON DELETE NO ACTION
 );
+
 
 CREATE TABLE Descuentos (
     DescuentoID INT PRIMARY KEY IDENTITY (1,1),
@@ -120,13 +133,15 @@ CREATE TABLE Reviews (
 CREATE TABLE CarritoProducto (
     CarritoProductoID INT PRIMARY KEY IDENTITY (1,1),
     CarritoID INT FOREIGN KEY REFERENCES CarritoCompras(CarritoID) ON DELETE CASCADE, 
-    ProductoID INT FOREIGN KEY REFERENCES Productos(ProductoID),
+    ProductoID INT NOT NULL,
     ProductoNombre NVARCHAR(100) NOT NULL,                          -- Nombre del producto en el momento de agregarlo
     Linea INT NOT NULL,                                             -- Orden del producto en el carrito    
     Cantidad DECIMAL(10, 2) NOT NULL CHECK (Cantidad > 0),          -- Cantidad del producto, no negativa
     PrecioOriginal DECIMAL(10, 2) NOT NULL,                         -- Precio sin descuento
 	DescuentoAplicado DECIMAL(5, 2) NOT NULL,						-- Descuento aplicado
     LineaTotal DECIMAL(10, 2) NOT NULL,                             -- Cantidad * PrecioOriginal	
+    -- Definición de claves foráneas con nombres bonitos y ON DELETE CASCADE
+    CONSTRAINT FK_CarritoProducto_Productos FOREIGN KEY (ProductoID) REFERENCES Productos(ProductoID) ON DELETE CASCADE,
 );
 
 
@@ -187,6 +202,21 @@ INSERT INTO Productos(Nombre, Descripcion, Precio, Stock, CategoriaID, MarcaID, 
 
 INSERT INTO Descuentos(ProductoID, Porcentaje, FechaInicio, FechaFin) VALUES
 (1, 10, GETDATE(), GETDATE() + 1);
+
+
+-- Pruebas para el borrado de productos
+
+INSERT INTO Descuentos(ProductoID, Porcentaje, FechaInicio, FechaFin) VALUES
+(24, 10, GETDATE(), GETDATE() + 1);
+
+INSERT INTO Reviews(UsuarioID, ProductoID, Calificacion, Comentario) VALUES
+	(1, 24, 2, 'Me gustó pero no captura a veces.');
+
+SELECT * FROM Productos
+SELECT * FROM DESCUENTOS
+SELECT * FROM Reviews
+SELECT * FROM CarritoProducto
+SELECT * FROM LineasFactura
 
 INSERT INTO Reviews(UsuarioID, ProductoID, Calificacion, Comentario) VALUES
 	(1, 5, 4.4, 'Me gustó pero no captura a veces.'),

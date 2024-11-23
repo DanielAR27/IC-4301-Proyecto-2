@@ -36,13 +36,13 @@ BEGIN
         FROM CarritoProducto 
         WHERE CarritoID = @CarritoID;
 
-		-- 3) Verificar si hay un descuento actual para el ProductoID
-		SELECT TOP 1 @DescuentoAplicado = D.Porcentaje
-		FROM Descuentos D
-		WHERE D.ProductoID = @ProductoID
-			AND DATEDIFF(MINUTE, GETDATE(), D.FechaInicio) <= 0
-			AND DATEDIFF(MINUTE, GETDATE(), D.FechaFin) >= 0
-		ORDER BY D.FechaInicio ASC; -- Ordenar por fecha de inicio para obtener el descuento más antiguo primero
+        -- 3) Verificar si hay un descuento actual para el ProductoID
+        SELECT TOP 1 @DescuentoAplicado = D.Porcentaje
+        FROM Descuentos D
+        WHERE D.ProductoID = @ProductoID
+            AND DATEDIFF(MINUTE, GETDATE(), D.FechaInicio) <= 0
+            AND DATEDIFF(MINUTE, GETDATE(), D.FechaFin) >= 0
+        ORDER BY D.FechaInicio ASC;
 
         -- Calcular el total de la línea con descuento aplicado si corresponde
         SET @LineaTotal = @Cantidad * @PrecioOriginal - (@Cantidad * @PrecioOriginal * @DescuentoAplicado * 0.01);
@@ -69,25 +69,20 @@ BEGIN
 
             SET @Resultado = 1; -- Código para insert exitoso
         END
-
-        -- 5) Actualizar el TotalCarrito con la suma de LineaTotal de CarritoProducto
-        UPDATE CarritoCompras
-        SET TotalCarrito = (
-            SELECT SUM(LineaTotal)
-            FROM CarritoProducto
-            WHERE CarritoID = @CarritoID
-        )
-        WHERE CarritoID = @CarritoID;
-
         COMMIT TRANSACTION;
     END TRY
     BEGIN CATCH
+        -- Capturar el error del trigger
         IF @@TRANCOUNT > 0
             ROLLBACK TRANSACTION;
-        PRINT 'Ocurrió un error en la operación del carrito.';
+
+        -- Manejar el error específico del trigger
+        IF ERROR_NUMBER() = 50001
+        BEGIN
+            SET @Resultado = -2; -- Código para error de stock insuficiente
+			PRINT 'Error: La cantidad solicita supera al stock disponible.';
+			RETURN;
+        END
     END CATCH
 END;
 GO
-
-SELECT *
-FROM CarritoProducto

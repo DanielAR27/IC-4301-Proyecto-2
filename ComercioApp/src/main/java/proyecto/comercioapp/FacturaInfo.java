@@ -277,21 +277,38 @@ public class FacturaInfo extends javax.swing.JFrame {
         productosPagina = DBMediator.getDetallesFacturaPorPagina(facturaID, numPagina);
         int stillDetalles = DBMediator.verificarDetallesFacturaPorPagina(facturaID, numPagina + 1);
 
+        // Selecciona el primer panel por defecto.
         if (numPagina == 0 && productosPagina.isEmpty()) {
-            JPanel panelSinDetalles = new JPanel();
-            panelSinDetalles.setLayout(null);
-            panelSinDetalles.setBounds(panelesProductos.get(0).getBounds());
-            panelSinDetalles.setBackground(new Color(245, 245, 245));
-            panelSinDetalles.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+            // Crear un panel temporal con el mensaje de "No hay productos todavía en el carrito"
+            JPanel panelSinProductos = new JPanel();
+            panelSinProductos.setLayout(null);
+            panelSinProductos.setBounds(panelesProductos.get(0).getBounds()); // Usar las coordenadas del primer panel
+            panelSinProductos.setBackground(new Color(245, 245, 245));
+            panelSinProductos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
-            JLabel mensajeLabel = new JLabel("No hay detalles disponibles en esta factura.");
-            mensajeLabel.setBounds(10, 10, 500, 20);
-            panelSinDetalles.add(mensajeLabel);
+            JLabel mensajeLabel = new JLabel("No hay productos todavía en el carrito");
+            mensajeLabel.setBounds(10, 10, 500, 20); // Ajustar el tamaño y la posición según sea necesario
+            panelSinProductos.add(mensajeLabel);
 
-            outerPanel.add(panelSinDetalles);
-            panelSinDetalles.setVisible(true);
+            // Agregar el panel al outerPanel y hacerlo visible
+            outerPanel.add(panelSinProductos);
+            panelSinProductos.setVisible(true);
 
+            // Ocultar la etiqueta de descripción.
+            descripcionLabel.setVisible(false);
+            // Ocultar el botón de continuar.
             siguienteButton.setVisible(false);
+            // Limpiar el botón de la imagen de producto.
+            productPicPanel.removeAll();
+            productPicPanel.revalidate();
+            productPicPanel.repaint();            
+            // Ocultar todos los paneles de productos
+            for (int i = 0; i < panelesProductos.size(); i++) {
+                JPanel productoPanel = panelesProductos.get(i);
+                if (productoPanel != null) {
+                    productoPanel.setVisible(false);
+                }
+            }
         } else {
             // Se deja la vista para el primer producto.
             panelSeleccionado(0);            
@@ -310,7 +327,7 @@ public class FacturaInfo extends javax.swing.JFrame {
                     // Formatear el texto del producto con el porcentaje de descuento
                     String textoProducto = nombreProducto + "   " + cantidad + " x £" + String.format("%.2f", precio);
                     if (descuento > 0) {
-                        textoProducto += " (" + String.format("%.0f", porcentajeDescuento) + "% de descuento)";
+                        textoProducto += " (" + String.format("%.0f", descuento) + "% de descuento)";
                     }
                     textoProducto += " = £" + String.format("%.2f", lineaTotal);
 

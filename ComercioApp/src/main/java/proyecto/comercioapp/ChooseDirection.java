@@ -39,6 +39,7 @@ public class ChooseDirection extends javax.swing.JFrame {
         returnButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Escoger Dirección");
         setResizable(false);
 
         DirectionPanel.setBackground(new java.awt.Color(153, 204, 255));

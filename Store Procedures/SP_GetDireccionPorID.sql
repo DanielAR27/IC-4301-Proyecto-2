@@ -1,3 +1,5 @@
+USE DB_Proyecto;
+GO
 CREATE PROCEDURE GetDireccionPorID
     @DireccionID INT
 AS
@@ -21,7 +23,4 @@ BEGIN
         PRINT 'Ocurrió un error al obtener las direcciones del usuario.';
     END CATCH
 END;
-
-EXEC GetDireccionPorID 1
-
-EXEC GetDireccionesPorUsuario 1
+GO

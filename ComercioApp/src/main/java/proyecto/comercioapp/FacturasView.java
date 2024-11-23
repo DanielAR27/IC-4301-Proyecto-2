@@ -48,8 +48,11 @@ public class FacturasView extends javax.swing.JFrame {
         siguienteButton = new javax.swing.JButton();
         anteriorButton = new javax.swing.JButton();
         homeIcon = new javax.swing.JButton();
+        facturasLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Menú de Facturas");
+        setResizable(false);
 
         facturasPanel.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -94,6 +97,10 @@ public class FacturasView extends javax.swing.JFrame {
             }
         });
 
+        facturasLabel.setFont(new java.awt.Font("Rockwell", 1, 18)); // NOI18N
+        facturasLabel.setForeground(new java.awt.Color(0, 0, 0));
+        facturasLabel.setText("Menú de Facturas");
+
         javax.swing.GroupLayout facturasPanelLayout = new javax.swing.GroupLayout(facturasPanel);
         facturasPanel.setLayout(facturasPanelLayout);
         facturasPanelLayout.setHorizontalGroup(
@@ -104,17 +111,24 @@ public class FacturasView extends javax.swing.JFrame {
                 .addGap(31, 31, 31)
                 .addComponent(siguienteButton)
                 .addContainerGap(365, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, facturasPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(facturasPanelLayout.createSequentialGroup()
+                .addGap(87, 87, 87)
+                .addComponent(facturasLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(homeIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         facturasPanelLayout.setVerticalGroup(
             facturasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, facturasPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(homeIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 390, Short.MAX_VALUE)
+                .addGroup(facturasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(facturasPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(homeIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(facturasPanelLayout.createSequentialGroup()
+                        .addGap(88, 88, 88)
+                        .addComponent(facturasLabel)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 381, Short.MAX_VALUE)
                 .addGroup(facturasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(anteriorButton)
                     .addComponent(siguienteButton))
@@ -191,7 +205,7 @@ public class FacturasView extends javax.swing.JFrame {
         int altoPanel = 55;
         int espacioEntrePaneles = 10;
         int xInicial = (facturasPanel.getWidth() - anchoPanel) / 2;
-        int yInicial = 90;
+        int yInicial = 120;
 
         for (int i = 0; i < 5; i++) {
             JPanel facturaPanel = new JPanel();
@@ -231,49 +245,65 @@ public class FacturasView extends javax.swing.JFrame {
         facturasPagina = DBMediator.getFacturasPorPagina(usuarioID, numPagina);
         int stillFacturas = DBMediator.verificarFacturasPorPagina(usuarioID, numPagina + 1);
 
-        if (numPagina == 0 && facturasPagina.isEmpty()) {
-            JPanel panelSinFacturas = new JPanel();
-            panelSinFacturas.setLayout(null);
-            panelSinFacturas.setBounds(panelesFacturas.get(0).getBounds());
-            panelSinFacturas.setBackground(new Color(245, 245, 245));
-            panelSinFacturas.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        // Limpia todos los paneles antes de actualizarlos
+        for (JPanel panel : panelesFacturas.values()) {
+            panel.setVisible(false); // Ocultar todos los paneles inicialmente
+            JLabel facturaLabel = (JLabel) panel.getComponent(0);
+            facturaLabel.setText(""); // Limpiar texto anterior
+        }
 
-            JLabel mensajeLabel = new JLabel("No hay facturas disponibles.");
-            mensajeLabel.setBounds(10, 10, 500, 20);
-            panelSinFacturas.add(mensajeLabel);
+        // Si no hay facturas en la página
+        if (facturasPagina == null || facturasPagina.isEmpty()) {
+            JPanel panelSinFacturas = panelesFacturas.get(0); // Usar el primer panel disponible
 
-            facturasPanel.add(panelSinFacturas);
-            panelSinFacturas.setVisible(true);
+            if (panelSinFacturas != null) {
+                // Limpia el panel y agrega el mensaje
+                panelSinFacturas.removeAll(); // Eliminar componentes previos
 
-            siguienteButton.setVisible(false);
-        } else {
-            for (List<Object> factura : facturasPagina) {
-                JPanel facturaPanel = panelesFacturas.get(index);
+                JLabel mensajeLabel = new JLabel("No hay facturas disponibles.");
+                mensajeLabel.setBounds(10, 10, panelSinFacturas.getWidth() - 20, panelSinFacturas.getHeight() - 20);
+                mensajeLabel.setHorizontalAlignment(JLabel.CENTER);
+                mensajeLabel.setVerticalAlignment(JLabel.CENTER);
+                mensajeLabel.setFont(mensajeLabel.getFont().deriveFont(18f).deriveFont(java.awt.Font.BOLD)); // Tamaño grande y negrita
+                panelSinFacturas.add(mensajeLabel);
 
-                if (facturaPanel != null) {
-                    int facturaID = (Integer) factura.get(0);
-                    String fecha = factura.get(1).toString();
-                    float total = (Float) factura.get(2);
-                    float costoEnvio = (Float) factura.get(3);
-
-                    String textoFactura = String.format(
-                        "Factura ID: %d | Fecha: %s | Total: £%.2f | Costo de Envío: £%.2f",
-                        facturaID, fecha, total, costoEnvio
-                    );
-
-                    JLabel facturaLabel = (JLabel) facturaPanel.getComponent(0);
-                    facturaLabel.setText(textoFactura);
-
-                    facturaPanel.setVisible(true);
-                    index++;
-                }
+                panelSinFacturas.setVisible(true); // Mostrar el panel
             }
 
-            for (int i = index; i < panelesFacturas.size(); i++) {
-                JPanel facturaPanel = panelesFacturas.get(i);
-                if (facturaPanel != null) {
-                    facturaPanel.setVisible(false);
-                }
+            siguienteButton.setVisible(false);
+            anteriorButton.setVisible(false); // Deshabilitar botones
+            return;
+        }
+
+        // Si hay facturas, actualizarlas en los paneles
+        for (List<Object> factura : facturasPagina) {
+            JPanel facturaPanel = panelesFacturas.get(index);
+
+            if (facturaPanel != null) {
+                int facturaID = (Integer) factura.get(0);
+                String fecha = factura.get(1).toString();
+                float total = (Float) factura.get(2);
+                float costoEnvio = (Float) factura.get(3);
+                String estado = factura.get(4).toString();
+
+                String textoFactura = String.format(
+                    "Factura ID: %d | Fecha: %s | Total: £%.2f | Costo de Envío: £%.2f | Estado: %s",
+                    facturaID, fecha, total, costoEnvio, estado
+                );
+
+                JLabel facturaLabel = (JLabel) facturaPanel.getComponent(0);
+                facturaLabel.setText(textoFactura);
+
+                facturaPanel.setVisible(true);
+                index++;
+            }
+        }
+
+        // Ocultar paneles no usados
+        for (int i = index; i < panelesFacturas.size(); i++) {
+            JPanel facturaPanel = panelesFacturas.get(i);
+            if (facturaPanel != null) {
+                facturaPanel.setVisible(false); // Ocultar panel no utilizado
             }
         }
 
@@ -302,6 +332,7 @@ public class FacturasView extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton anteriorButton;
+    private javax.swing.JLabel facturasLabel;
     private javax.swing.JPanel facturasPanel;
     private javax.swing.JButton homeIcon;
     private javax.swing.JButton siguienteButton;

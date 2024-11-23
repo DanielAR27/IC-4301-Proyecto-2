@@ -35,6 +35,7 @@ public class UsuarioReview extends javax.swing.JDialog {
         super(parent, modal);
         llenarAtributos(DBMediator.getProductoInfo(productoID));        
         initComponents();
+        this.setLayout(null);
         this.pagina = 0;
         this.usuarioID = usuarioID;
         this.productoID = productoID;
@@ -60,6 +61,7 @@ public class UsuarioReview extends javax.swing.JDialog {
         siguienteButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         anteriorButton.setText("Página Anterior");
         anteriorButton.addActionListener(new java.awt.event.ActionListener() {
@@ -205,7 +207,7 @@ public class UsuarioReview extends javax.swing.JDialog {
     private void crearLabelsReviews() {
         int xInicial = iconLabel.getX(); // Alineado con el iconLabel en el eje X
         int yInicial = iconLabel.getY() + iconLabel.getHeight() + 10; // Justo debajo de iconLabel
-        int anchoLabel = 400; // Ancho de las etiquetas
+        int anchoLabel = 560; // Ancho de las etiquetas
         int espacioEntreReviews = 15; // Espacio entre cada review
 
         // Inicializar el mapa para almacenar las etiquetas

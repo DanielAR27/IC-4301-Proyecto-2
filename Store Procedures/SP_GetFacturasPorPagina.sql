@@ -16,7 +16,8 @@ BEGIN
             FacturaID,
             FechaFactura,
             Total,
-            CostoEnvio
+            CostoEnvio,
+			Estado
         FROM 
             Facturas
         WHERE 

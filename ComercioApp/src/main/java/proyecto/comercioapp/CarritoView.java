@@ -61,6 +61,7 @@ public class CarritoView extends javax.swing.JFrame {
         siguienteButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Menú de Compras");
         setResizable(false);
 
         outerPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -361,7 +362,7 @@ public class CarritoView extends javax.swing.JFrame {
                     // Formatear el texto del producto con el porcentaje de descuento
                     String textoProducto = nombreProducto + "   " + cantidad + " x £" + String.format("%.2f", precio);
                     if (descuento > 0) {
-                        textoProducto += " (" + String.format("%.0f", porcentajeDescuento) + "% de descuento)";
+                        textoProducto += " (" + String.format("%.0f", descuento) + "% de descuento)";
                     }
                     textoProducto += " = £" + String.format("%.2f", lineaTotal);
 
