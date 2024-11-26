@@ -1120,6 +1120,42 @@ public class DBMediator {
         return reviews; // Retornar la lista de estados/provincias
     }
     
+    public static List<List<Object>> getReviewsPorUsuario(int usuarioID, int pagina) {
+        List<List<Object>> reviews = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetReviewsPorUsuario ?, ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Establecer el valor del parámetro
+            statement.setInt(1, usuarioID);
+            statement.setInt(2, pagina);
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+                        
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> review = new ArrayList<>();
+                review.add(resultSet.getInt(1)); // Agregar el id del review.
+                review.add(resultSet.getInt(2)); // Agregar el id del producto
+                review.add(resultSet.getString(3)); // Agregar el nombre del producto.
+                review.add(resultSet.getInt(4)); // Obtener la calificación de la reseña.
+                review.add(resultSet.getString(5)); // Agregar la imagen del productp.
+                reviews.add(review);
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        return reviews; // Retornar la lista de estados/provincias
+    }
+    
     public static int verificarProductosPorPagina(int pagina){
         try{
              /*Establecer conexiones y ejecutar el query.*/
@@ -1424,10 +1460,40 @@ public class DBMediator {
         
             return resultado; //Obtener el resultado.
         }catch(SQLException ex){
+            ex.printStackTrace();
             return -1;
         }             
     }
     
+    public static int verificarReviewsParaUsuario(int usuarioID, int pagina){
+        try{
+             /*Establecer conexiones y ejecutar el query.*/
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC VerificarReviewsParaUsuario ?, ?, ?";
+            CallableStatement statement = connection.prepareCall(sql);//crear statement
+            // Establecer los valores de los parámetros
+            
+  
+            statement.setInt(1, usuarioID);
+            statement.setInt(2, pagina);
+            // Preparar para registrar el valor de salida
+            statement.registerOutParameter(3, Types.INTEGER);
+            
+            // Ejecutar la llamada al procedimiento
+            statement.execute();
+
+            // Recuperar el valor del parámetro de salida
+            int resultado = statement.getInt(3);
+            
+            //Cerrar la conexión.
+            connection.close();
+        
+            return resultado; //Obtener el resultado.
+        }catch(SQLException ex){
+            return -1;
+        }             
+    }
+
     public static int verificarReviewsPorProducto(int productoID, int pagina){
             try{
                  /*Establecer conexiones y ejecutar el query.*/
@@ -2530,55 +2596,31 @@ public class DBMediator {
             return -1;
         }
     }
-        
-    public static List<Object> getProductoPorID(int productoID) {
-        try {
-            Connection connection = SQLConnection.getConnection();
-            String sql = "SELECT ProductoID, Nombre, Precio, Stock, Categoria, Marca " +
-                         "FROM Productos WHERE ProductoID = " + productoID;
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            if (resultSet.next()) {
-                List<Object> productoData = new ArrayList<>();
-                productoData.add(resultSet.getInt("ProductoID")); // ID
-                productoData.add(resultSet.getString("Nombre"));  // Nombre
-                productoData.add(resultSet.getFloat("Precio"));   // Precio
-                productoData.add(resultSet.getInt("Stock"));      // Stock
-                productoData.add(resultSet.getString("Categoria"));// Categoría
-                productoData.add(resultSet.getString("Marca"));   // Marca
-                connection.close();
-                return productoData;
-            } else {
-                connection.close();
-                return null; // Producto no encontrado
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null; // Error durante la consulta
-        }
-    }    
-
-    public static int insertarReview(int usuarioID, int productoID, int calificacion, String comentario){
+       
+    public static int upsertReview(Integer reviewID, int usuarioID, int productoID, int calificacion, String comentario){
         try{
              /*Establecer conexiones y ejecutar el query.*/
             Connection connection = SQLConnection.getConnection();
-            String sql = "EXEC  InsertarReview ?, ?, ?, ?, ?";
+            String sql = "EXEC  UpsertReview ?, ?, ?, ?, ?, ?";
             CallableStatement statement = connection.prepareCall(sql);//crear statement
             // Establecer los valores de los parámetros
-            
-            statement.setInt(1, usuarioID);
-            statement.setInt(2, productoID); 
-            statement.setInt(3, calificacion);
-            statement.setString(4, comentario);
+            if (reviewID == null) {
+                statement.setNull(1, Types.INTEGER); // Si es null, usar setNull
+            } else {
+                statement.setInt(1, reviewID);
+            }
+            statement.setInt(2, usuarioID);
+            statement.setInt(3, productoID); 
+            statement.setInt(4, calificacion);
+            statement.setString(5, comentario);
             // Preparar para registrar el valor de salida
-            statement.registerOutParameter(5, Types.INTEGER);
+            statement.registerOutParameter(6, Types.INTEGER);
             
             // Ejecutar la llamada al procedimiento
             statement.execute();
 
             // Recuperar el valor del parámetro de salida
-            int resultado = statement.getInt(5);
+            int resultado = statement.getInt(6);
             
             //Cerrar la conexión.
             connection.close();
@@ -2588,6 +2630,50 @@ public class DBMediator {
             ex.printStackTrace();
             return -2;
         }        
+    }
+    
+    public static int deleteReview(int reviewID) {
+        try {
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC DeleteReview ?, ?";
+            CallableStatement statement = connection.prepareCall(sql);
+            statement.setInt(1, reviewID); // ID de la factura
+            // Preparar para registrar el valor de salida
+            statement.registerOutParameter(2, Types.INTEGER);
+            // Ejecutar la llamada al procedimiento
+            statement.execute();
+            // Recuperar el valor del parámetro de salida
+            int resultado = statement.getInt(2);
+            connection.close();
+            return resultado; // Indicar éxito
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return -1; // Indicar error
+        }
+    }
+    
+    
+        public static List<Object> getReviewPorID(int reviewID) {
+        List<Object> datosReview = new ArrayList<>();
+        try {
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetReviewPorID ?"; // Suponiendo que tienes un SP llamado ObtenerDatosUsuario
+            CallableStatement statement = connection.prepareCall(sql);
+
+            // Establecer el parámetro de entrada
+            statement.setInt(1, reviewID);
+
+            // Ejecutar y obtener los resultados
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                datosReview.add(resultSet.getInt(1));
+                datosReview.add(resultSet.getString(2));
+            }
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return datosReview;
     }
     
 }

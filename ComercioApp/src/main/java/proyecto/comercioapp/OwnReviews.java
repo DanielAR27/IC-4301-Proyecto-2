@@ -7,32 +7,36 @@ import java.util.Map;
 import java.util.TreeMap;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import proyecto.db.DBMediator;
 
-public class ReviewsView extends javax.swing.JFrame {
-    
+public class OwnReviews extends javax.swing.JFrame {
+
+
     private int usuarioID;
     private int pagina;
-    private Map<Integer, JButton> botonesProductos;
-    private List<List<Object>> productosPagina;
+    private Map<Integer, JButton> botonesReviews;
+    private List<List<Object>> reviewsPagina;
     
-    public ReviewsView() {
+    public OwnReviews() {
         initComponents();
     }
-    
-    public ReviewsView(int usuarioID){
+
+    public OwnReviews(int usuarioID){
         initComponents();
         actualizarLabels();
         this.usuarioID = usuarioID;
         this.pagina = 0;
-        this.productosPagina = new ArrayList<>();
-        this.botonesProductos = new TreeMap<>();
+        this.reviewsPagina = new ArrayList<>();
+        this.botonesReviews = new TreeMap<>();
         crearBotonesProductos();
         actualizarBotones(pagina);
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,14 +48,13 @@ public class ReviewsView extends javax.swing.JFrame {
 
         anteriorButton = new javax.swing.JButton();
         siguienteButton = new javax.swing.JButton();
+        reviewLabel = new javax.swing.JLabel();
         homeIcon = new javax.swing.JButton();
         reviewsProductosIcon = new javax.swing.JButton();
-        reviewLabel = new javax.swing.JLabel();
-        actualizarReviewsIcon = new javax.swing.JButton();
+        reviewsViewIcon = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Menú de Reviews");
-        setResizable(false);
+        setTitle("Menú de Reseñas Propias");
 
         anteriorButton.setText("Página Anterior");
         anteriorButton.setPreferredSize(new java.awt.Dimension(120, 25));
@@ -67,6 +70,9 @@ public class ReviewsView extends javax.swing.JFrame {
                 siguienteButtonActionPerformed(evt);
             }
         });
+
+        reviewLabel.setFont(new java.awt.Font("Rockwell", 1, 18)); // NOI18N
+        reviewLabel.setText("Menú de Reviews");
 
         try {
             URL urlHome = new URL("https://i.ibb.co/LvrDQZx/home-img.png");
@@ -122,28 +128,30 @@ public class ReviewsView extends javax.swing.JFrame {
             }
         });
 
-        reviewLabel.setFont(new java.awt.Font("Rockwell", 1, 18)); // NOI18N
-        reviewLabel.setText("Menú de Reviews");
+        try {
+            URL urlReviewView = new URL("https://i.ibb.co/dMmjWK2/ver-reviews.png");
+            ImageIcon reviewView = new ImageIcon(urlReviewView);
+            reviewsViewIcon.setIcon(reviewView);
 
-        try{
-            URL urlActualizarReview = new URL("https://i.ibb.co/K5H0y05/review-edit.png");
-            ImageIcon actualizarReviews= new ImageIcon(urlActualizarReview);
-            actualizarReviewsIcon.setIcon(actualizarReviews);
-            actualizarReviewsIcon.setText("<html><center><b>Editar reviews</b></center></html>");
+            // Agregar texto debajo del ícono y usar HTML para formatearlo en negrita
+            reviewsViewIcon.setText("<html><center><b>Ver Reviews</b></center></html>");
+
             // Configurar la posición del texto y el ícono
-            actualizarReviewsIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-            actualizarReviewsIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+            reviewsViewIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            reviewsViewIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
             // Hacer el fondo transparente y quitar el borde
-            actualizarReviewsIcon.setContentAreaFilled(false); // Hace que el fondo sea transparente
-            actualizarReviewsIcon.setBorderPainted(false); // Quita el borde
-            actualizarReviewsIcon.setFocusPainted(false); // Quita el borde de enfoque al hacer clic
+            reviewsViewIcon.setContentAreaFilled(false); // Hace que el fondo sea transparente
+            reviewsViewIcon.setBorderPainted(false); // Quita el borde
+            reviewsViewIcon.setFocusPainted(false); // Quita el borde de enfoque al hacer clic
         }catch(Exception e){
-            actualizarReviewsIcon.setText("No se ha encontrado la imagen.");
+            reviewsViewIcon.setText("No se ha encontrado la imagen.");
         }
-        actualizarReviewsIcon.addActionListener(new java.awt.event.ActionListener() {
+        reviewsViewIcon.setPreferredSize(new java.awt.Dimension(64, 64));
+        // Code adding the component to the parent container - not shown here
+        reviewsViewIcon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                actualizarReviewsIconActionPerformed(evt);
+                reviewsViewIconActionPerformed(evt);
             }
         });
 
@@ -161,9 +169,9 @@ public class ReviewsView extends javax.swing.JFrame {
                 .addGap(82, 82, 82)
                 .addComponent(reviewLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(reviewsViewIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(reviewsProductosIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(actualizarReviewsIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(homeIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -173,14 +181,14 @@ public class ReviewsView extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(98, 98, 98)
+                        .addComponent(reviewLabel))
+                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(reviewsProductosIcon, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
                             .addComponent(homeIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(actualizarReviewsIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(98, 98, 98)
-                        .addComponent(reviewLabel)))
+                            .addComponent(reviewsViewIcon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 352, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(anteriorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -193,7 +201,7 @@ public class ReviewsView extends javax.swing.JFrame {
 
     private void anteriorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anteriorButtonActionPerformed
         pagina -= 1;
-        actualizarBotones(pagina);        
+        actualizarBotones(pagina);
     }//GEN-LAST:event_anteriorButtonActionPerformed
 
     private void siguienteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siguienteButtonActionPerformed
@@ -213,11 +221,11 @@ public class ReviewsView extends javax.swing.JFrame {
         rp.setVisible(true);
     }//GEN-LAST:event_reviewsProductosIconActionPerformed
 
-    private void actualizarReviewsIconActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actualizarReviewsIconActionPerformed
+    private void reviewsViewIconActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reviewsViewIconActionPerformed
         this.dispose();
-        OwnReviews ow = new OwnReviews(usuarioID);
-        ow.setVisible(true);
-    }//GEN-LAST:event_actualizarReviewsIconActionPerformed
+        ReviewsView rv = new ReviewsView(usuarioID);
+        rv.setVisible(true);
+    }//GEN-LAST:event_reviewsViewIconActionPerformed
 
     /**
      * @param args the command line arguments
@@ -236,25 +244,24 @@ public class ReviewsView extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ReviewsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OwnReviews.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ReviewsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OwnReviews.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ReviewsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OwnReviews.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ReviewsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OwnReviews.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ReviewsView().setVisible(true);
+                new OwnReviews().setVisible(true);
             }
         });
     }
-
+    
     private void crearBotonesProductos() {
         int xInicial = 80; // Posición inicial x
         int yInicial = 130; // Posición inicial y
@@ -268,9 +275,9 @@ public class ReviewsView extends javax.swing.JFrame {
             JButton boton = new JButton("Botón " + (i + 1));
             boton.setBounds(xInicial, yInicial, anchoBoton, altoBoton);
             boton.setVisible(true); // Todos los botones visibles por defecto
-            boton.addActionListener(e -> {showProductoInfo(botonPosition);});
+            boton.addActionListener(e -> {mostrarOpcionesEdicion(botonPosition);});
             // Agregar el botón al mapa
-            botonesProductos.put(i, boton);
+            botonesReviews.put(i, boton);
             this.add(boton);
             
             // Actualizar la posición x para el siguiente botón
@@ -284,31 +291,35 @@ public class ReviewsView extends javax.swing.JFrame {
             
         }   
     }
-   
-    private void actualizarBotones(int numPagina) {
+    
+    public final void resetearPagina(){
+        this.pagina = 0;
+    }
+    
+    public final void actualizarBotones(int numPagina) {
         int index = 0;
-        productosPagina = DBMediator.getProductosConReviews(pagina);
-        int stillProducts = DBMediator.verificarProductosConReviews(pagina + 1);
-        
+        reviewsPagina = DBMediator.getReviewsPorUsuario(usuarioID, pagina);
+        int stillProducts = DBMediator.verificarReviewsParaUsuario(usuarioID, pagina + 1);
+
         // Limpiar los íconos de descuento existentes de los botones
-        for (JButton boton : botonesProductos.values()) {
+        for (JButton boton : botonesReviews.values()) {
             // Remover todos los componentes dentro del botón
             boton.removeAll();
             boton.revalidate();
             boton.repaint();
         }
         
-        for (List<Object> producto : productosPagina) {
-          JButton boton = botonesProductos.get(index);
+        for (List<Object> producto : reviewsPagina) {
+          JButton boton = botonesReviews.get(index);
           if (boton != null) {
               try {
                   // Cargar la imagen de forma asíncrona
-                  cargarImagenEnBoton(boton, (String) producto.get(3));
+                  cargarImagenEnBoton(boton, (String) producto.get(4));
 
                   // Configurar el texto con el nombre y el precio en negrita
-                  String nombreProducto = (String) producto.get(1);
-                  float precio = (Float) producto.get(2);
-                  String texto = "<html><center>" + nombreProducto + "<br><b>£" + precio + "</b></center></html>";
+                  String nombreProducto = (String) producto.get(2);
+                  int calificacion = (Integer) producto.get(3);
+                  String texto = "<html><center>" + nombreProducto + "<br><b>✩" + calificacion + "</b></center></html>";
                   boton.setText(texto);
 
                   // Configurar la posición del texto y la imagen
@@ -325,7 +336,7 @@ public class ReviewsView extends javax.swing.JFrame {
       }
         // Ocultar los botones que no tienen datos
         for (int i = index; i < 10; i++) {
-            JButton boton = botonesProductos.get(i);
+            JButton boton = botonesReviews.get(i);
             if (boton != null) {
                 boton.setVisible(false);
             }
@@ -338,11 +349,105 @@ public class ReviewsView extends javax.swing.JFrame {
         siguienteButton.setVisible(stillProducts == 1);
     } 
  
-    private void showProductoInfo(int botonPosition){
-        int productoID = (Integer) productosPagina.get(botonPosition).get(0); //Obtener el ID del producto del cual se toca el botón.
-        UsuarioReview ur = new UsuarioReview(this, true, usuarioID, productoID);
-        ur.setVisible(true);
+    private void mostrarOpcionesEdicion(int botonPosition) {
+        try {
+            // Validar que el índice sea válido
+            if (botonPosition < reviewsPagina.size()) {
+                // Obtener los datos de la factura desde facturasPagina
+                List<Object> review = reviewsPagina.get(botonPosition);
+                int reviewID = (Integer)  review.get(0); // Obtener el ID de la factura
+                int productoID = (Integer) review.get(1);
+                
+                // Crear un JDialog
+                JDialog dialog = new JDialog(this, "Escoja una opción", true); // Modal
+                dialog.setSize(300, 200); // Tamaño del diálogo
+                dialog.setLayout(null); // Diseño absoluto
+                dialog.setLocationRelativeTo(this); // Centrar en la ventana principal
+                dialog.setResizable(false); // No permitir redimensionar
+
+                // Label centrado con el texto "¿Qué desea cambiar?" en negrita
+                JLabel tituloLabel = new JLabel("¿Qué desea cambiar?", SwingConstants.CENTER);
+                tituloLabel.setBounds(50, 10, 200, 30);
+                tituloLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14)); // Negrita
+                dialog.add(tituloLabel);
+
+                // Botón para actualizar la refiew
+                JButton updateButton = new JButton("Actualizar Review");
+                updateButton.setBounds(50, 50, 200, 40); // Posicionado un poco más arriba
+                updateButton.addActionListener(e -> {
+                    dialog.dispose(); // Cerrar el diálogo
+                    showReviewInfo(reviewID, productoID);
+                });
+
+                // Botón para borrar la review
+                JButton deleteButton = new JButton("Eliminar Review");
+                deleteButton.setBounds(50, 100, 200, 40); // Posicionado un poco más arriba
+                deleteButton.addActionListener(e -> {
+                    dialog.dispose();
+                    eliminarReview(botonPosition);
+                });
+
+                // Agregar botones y label al diálogo
+                dialog.add(updateButton);
+                dialog.add(deleteButton);
+
+                // Mostrar el diálogo
+                dialog.setVisible(true);
+            } else {
+                throw new IndexOutOfBoundsException("Índice fuera de rango.");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Ha ocurrido un error al intentar editar la factura, intente de nuevo más tarde.",
+                    "Advertencia",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }    
+    
+    private void showReviewInfo(int reviewID, int productoID){
+        ProductoReview pr = new ProductoReview(this, true, usuarioID, productoID, reviewID);
+        pr.setVisible(true);
     }
+    
+   private void eliminarReview(int botonPosition){
+        try{
+            // Validar que el índice sea válido
+            if (botonPosition < reviewsPagina.size()) {
+                // Obtener los datos de la factura desde facturasPagina
+                List<Object> review = reviewsPagina.get(botonPosition);
+                int reviewID = (Integer) review.get(0); // Obtener el ID de la factura
+
+                int respuesta = JOptionPane.showConfirmDialog(
+                   this,
+                   "¿Está seguro de eliminar la review con ID \"" + reviewID + "\"?\nEsta acción es irreversible.",
+                   "Confirmar eliminación",
+                   JOptionPane.YES_NO_OPTION,
+                   JOptionPane.WARNING_MESSAGE
+               );
+                
+                if(respuesta == JOptionPane.YES_OPTION){
+                    int resultado = DBMediator.deleteReview(reviewID);
+                    switch (resultado) {
+                        case 0 ->{
+                            JOptionPane.showMessageDialog(this, "Review eliminada con éxito.", "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                            this.pagina = 0;
+                            actualizarBotones(0);
+                        }default ->{
+                            JOptionPane.showMessageDialog(this, "Error al eliminar la review.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }                    
+                }
+                
+            } else {
+                throw new IndexOutOfBoundsException("Índice fuera de rango.");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Ha ocurrido un error al intentar editar la review, intente de nuevo más tarde.",
+                    "Advertencia",
+                    JOptionPane.ERROR_MESSAGE);
+        }     
+    }    
     
    private void cargarImagenEnBoton(JButton boton, String urlImagen) {
         SwingWorker<ImageIcon, Void> worker = new SwingWorker<>() {
@@ -382,21 +487,21 @@ public class ReviewsView extends javax.swing.JFrame {
  
     private void actualizarLabels(){
         this.setLayout(null);
-        // Nota
-        reviewsProductosIcon.setBounds(homeIcon.getX() - 210, homeIcon.getY(),
+        reviewsViewIcon.setBounds(homeIcon.getX() - 200, homeIcon.getY(),
+                reviewsProductosIcon.getWidth(), reviewsProductosIcon.getHeight());
+        reviewsProductosIcon.setBounds(homeIcon.getX() - 100, homeIcon.getY(),
                 reviewsProductosIcon.getWidth(), reviewsProductosIcon.getHeight()); // Ajusta el tamaño según sea necesario
-        actualizarReviewsIcon.setBounds(homeIcon.getX() - 100, homeIcon.getY(),
-                actualizarReviewsIcon.getWidth(), actualizarReviewsIcon.getHeight()); // Ajusta el tamaño según sea necesario
         this.revalidate();
         this.repaint();
     }
-   
+    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton actualizarReviewsIcon;
     private javax.swing.JButton anteriorButton;
     private javax.swing.JButton homeIcon;
     private javax.swing.JLabel reviewLabel;
     private javax.swing.JButton reviewsProductosIcon;
+    private javax.swing.JButton reviewsViewIcon;
     private javax.swing.JButton siguienteButton;
     // End of variables declaration//GEN-END:variables
 }

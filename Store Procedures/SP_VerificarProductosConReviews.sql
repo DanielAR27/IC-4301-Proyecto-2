@@ -35,3 +35,5 @@ BEGIN
     END CATCH
 END;
 GO
+
+EXEC GetProductosConReviews 1

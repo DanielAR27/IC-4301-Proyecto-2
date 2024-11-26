@@ -3,16 +3,19 @@ package proyecto.comercioapp;
 import java.awt.Color;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import proyecto.db.DBMediator;
+import proyecto.utils.CheckUtils;
 
 public class ProductoReview extends javax.swing.JDialog {
 
     private int usuarioID;
     private int productoID;
+    private Integer reviewID;
     private int calificacion;
     private ImageIcon fullStar;
     private ImageIcon emptyStar;
@@ -25,13 +28,14 @@ public class ProductoReview extends javax.swing.JDialog {
     private Float calificacionPromedio;
     private String img;
     private int reviews;
+    private java.awt.Frame parent;
     
     public ProductoReview(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
 
-    public ProductoReview(java.awt.Frame parent, boolean modal, int usuarioID, int productoID) {
+    public ProductoReview(java.awt.Frame parent, boolean modal, int usuarioID, int productoID, Integer reviewID) {
         super(parent, modal);
         try{
             this.fullStar = new ImageIcon(new URL("https://i.ibb.co/LSgtNDz/full-star.png"));
@@ -43,6 +47,7 @@ public class ProductoReview extends javax.swing.JDialog {
         }
         llenarAtributos(DBMediator.getProductoInfo(productoID));
         initComponents();
+        this.parent = parent;
         this.setLayout(null);
         inicializarReviews();        
         actualizarLabels();
@@ -50,9 +55,12 @@ public class ProductoReview extends javax.swing.JDialog {
         this.setTitle("Reseña (Producto #" + productoID+ ")");
         this.usuarioID = usuarioID;
         this.productoID = productoID;
+        this.reviewID = reviewID;
+        if (reviewID != null){
+            cargarDatosReview();          
+        }
     }
-
-    
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -288,7 +296,7 @@ public class ProductoReview extends javax.swing.JDialog {
             JOptionPane.WARNING_MESSAGE);
          if (respuesta == JOptionPane.YES_OPTION) {
              String comentario = comentarioTextArea.getText();
-             int resReseña = DBMediator.insertarReview(usuarioID, productoID, calificacion, comentario);
+             int resReseña = DBMediator.upsertReview(reviewID, usuarioID, productoID, calificacion, comentario);
              switch(resReseña){
                  case 1 -> {
                     JOptionPane.showMessageDialog(this,
@@ -296,6 +304,18 @@ public class ProductoReview extends javax.swing.JDialog {
                             "Notificación",
                             JOptionPane.INFORMATION_MESSAGE);
                     this.dispose();
+                }case 2->{
+                    JOptionPane.showMessageDialog(this,
+                            "Se ha actualizado la review exitosamente.",
+                            "Notificación",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    this.dispose();    
+                if (parent instanceof OwnReviews) {
+                JOptionPane.showMessageDialog(this, "Se ha detectado cambios en una review, se reiniciará la pantalla.",
+                        "Notificación", JOptionPane.INFORMATION_MESSAGE);            
+                    ((OwnReviews) parent).resetearPagina();
+                    ((OwnReviews) parent).actualizarBotones(0);
+                }
                  }case -1 ->{
                     JOptionPane.showMessageDialog(this,
                             "Verifique haber seleccionado un valor para la reseña.",
@@ -398,6 +418,20 @@ public class ProductoReview extends javax.swing.JDialog {
         });
     }
 
+    private void cargarDatosReview(){
+        List <Object> reviewInfo = DBMediator.getReviewPorID(reviewID);
+        int calificacion = (Integer) reviewInfo.get(0);
+        String comentario = (String) reviewInfo.get(1);
+        comentarioTextArea.setText(comentario);
+        switch(calificacion){
+            case 1->oneStarButtonActionPerformed(null);
+            case 2-> twoStarsButtonActionPerformed(null);
+            case 3-> threeStarsButtonActionPerformed(null);
+            case 4-> fourStarsButtonActionPerformed(null);
+            case 5-> fiveStarsButtonActionPerformed(null);            
+        }
+    }
+    
     private void llenarAtributos(List<Object> productoInfo){
         productoNombre = (String) productoInfo.get(0);
         productoDescripcion = (String) productoInfo.get(1);

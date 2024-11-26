@@ -708,12 +708,6 @@ private void inicializarFiltroAutomatico() {
             this.pagina = 0;
             actualizarBotones(pagina);
     }//GEN-LAST:event_searchButtonActionPerformed
-
-    private void editarProducto(int productoID) {
-        EditarProductoView editarView = new EditarProductoView(productoID);
-        editarView.setVisible(true);
-    }
-
     
     private void filterTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filterTextFieldKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER){

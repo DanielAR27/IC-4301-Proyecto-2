@@ -352,7 +352,6 @@ public class FacturasEditView extends javax.swing.JFrame {
                     FacturaEditInfo fei = new FacturaEditInfo(usuarioID, facturaID);
                     fei.setVisible(true);
                     
-                    // Aquí puedes abrir otra ventana para editar las líneas
                 });
 
                 // Botón para editar información de factura

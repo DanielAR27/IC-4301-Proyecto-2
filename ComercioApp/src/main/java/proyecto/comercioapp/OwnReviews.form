@@ -3,8 +3,7 @@
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="Men&#xfa; de Reviews"/>
-    <Property name="resizable" type="boolean" value="false"/>
+    <Property name="title" type="java.lang.String" value="Men&#xfa; de Rese&#xf1;as Propias"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -36,9 +35,9 @@
               <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
               <Component id="reviewLabel" min="-2" pref="395" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
+              <Component id="reviewsViewIcon" min="-2" pref="105" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="reviewsProductosIcon" min="-2" pref="127" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="actualizarReviewsIcon" min="-2" pref="111" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="homeIcon" min="-2" pref="94" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -50,16 +49,16 @@
           <Group type="102" alignment="1" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="reviewsProductosIcon" pref="90" max="32767" attributes="0"/>
-                          <Component id="homeIcon" alignment="0" max="32767" attributes="0"/>
-                          <Component id="actualizarReviewsIcon" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="98" max="-2" attributes="0"/>
                       <Component id="reviewLabel" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="reviewsProductosIcon" alignment="0" pref="90" max="32767" attributes="0"/>
+                          <Component id="homeIcon" alignment="0" max="32767" attributes="0"/>
+                          <Component id="reviewsViewIcon" alignment="1" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace pref="352" max="32767" attributes="0"/>
@@ -92,6 +91,14 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="siguienteButtonActionPerformed"/>
       </Events>
     </Component>
+    <Component class="javax.swing.JLabel" name="reviewLabel">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Rockwell" size="18" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Men&#xfa; de Reviews"/>
+      </Properties>
+    </Component>
     <Component class="javax.swing.JButton" name="homeIcon">
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="homeIconActionPerformed"/>
@@ -108,26 +115,12 @@
         <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try {&#xa;    URL urlReviewProductos = new URL(&quot;https://i.ibb.co/7nw3SMQ/review-producto.png&quot;);&#xa;    ImageIcon reviewProductos = new ImageIcon(urlReviewProductos);&#xa;    reviewsProductosIcon.setIcon(reviewProductos);&#xa;&#xa;    // Agregar texto debajo del &#xed;cono y usar HTML para formatearlo en negrita&#xa;    reviewsProductosIcon.setText(&quot;&lt;html&gt;&lt;center&gt;&lt;b&gt;Hacer un review&lt;/b&gt;&lt;/center&gt;&lt;/html&gt;&quot;);&#xa;&#xa;    // Configurar la posici&#xf3;n del texto y el &#xed;cono&#xa;    reviewsProductosIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);&#xa;    reviewsProductosIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);&#xa;&#xa;    // Hacer el fondo transparente y quitar el borde&#xa;    reviewsProductosIcon.setContentAreaFilled(false); // Hace que el fondo sea transparente&#xa;    reviewsProductosIcon.setBorderPainted(false); // Quita el borde&#xa;    reviewsProductosIcon.setFocusPainted(false); // Quita el borde de enfoque al hacer clic&#xa;}catch(Exception e){&#xa;    reviewsProductosIcon.setText(&quot;No se ha encontrado la imagen.&quot;);&#xa;}&#xa;reviewsProductosIcon.setPreferredSize(new java.awt.Dimension(64, 64));&#xa;// Code adding the component to the parent container - not shown here"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JLabel" name="reviewLabel">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Rockwell" size="18" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Men&#xfa; de Reviews"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="actualizarReviewsIcon">
-      <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="&quot;&lt;html&gt;&lt;center&gt;&lt;b&gt;Editar reviews&lt;/b&gt;&lt;/center&gt;&lt;/html&gt;&quot;" type="code"/>
-        </Property>
-      </Properties>
+    <Component class="javax.swing.JButton" name="reviewsViewIcon">
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="actualizarReviewsIconActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reviewsViewIconActionPerformed"/>
       </Events>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="// Configurar la posici&#xf3;n del texto y el &#xed;cono&#xa;    actualizarReviewsIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);&#xa;    actualizarReviewsIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);&#xa;&#xa;    // Hacer el fondo transparente y quitar el borde&#xa;    actualizarReviewsIcon.setContentAreaFilled(false); // Hace que el fondo sea transparente&#xa;    actualizarReviewsIcon.setBorderPainted(false); // Quita el borde&#xa;    actualizarReviewsIcon.setFocusPainted(false); // Quita el borde de enfoque al hacer clic&#xa;}catch(Exception e){&#xa;    actualizarReviewsIcon.setText(&quot;No se ha encontrado la imagen.&quot;);&#xa;}"/>
-        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try{&#xa;    URL urlActualizarReview = new URL(&quot;https://i.ibb.co/K5H0y05/review-edit.png&quot;);&#xa;    ImageIcon actualizarReviews= new ImageIcon(urlActualizarReview);&#xa;    actualizarReviewsIcon.setIcon(actualizarReviews);"/>
+        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try {&#xa;    URL urlReviewView = new URL(&quot;https://i.ibb.co/dMmjWK2/ver-reviews.png&quot;);&#xa;    ImageIcon reviewView = new ImageIcon(urlReviewView);&#xa;    reviewsViewIcon.setIcon(reviewView);&#xa;&#xa;    // Agregar texto debajo del &#xed;cono y usar HTML para formatearlo en negrita&#xa;    reviewsViewIcon.setText(&quot;&lt;html&gt;&lt;center&gt;&lt;b&gt;Ver Reviews&lt;/b&gt;&lt;/center&gt;&lt;/html&gt;&quot;);&#xa;&#xa;    // Configurar la posici&#xf3;n del texto y el &#xed;cono&#xa;    reviewsViewIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);&#xa;    reviewsViewIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);&#xa;&#xa;    // Hacer el fondo transparente y quitar el borde&#xa;    reviewsViewIcon.setContentAreaFilled(false); // Hace que el fondo sea transparente&#xa;    reviewsViewIcon.setBorderPainted(false); // Quita el borde&#xa;    reviewsViewIcon.setFocusPainted(false); // Quita el borde de enfoque al hacer clic&#xa;}catch(Exception e){&#xa;    reviewsViewIcon.setText(&quot;No se ha encontrado la imagen.&quot;);&#xa;}&#xa;reviewsViewIcon.setPreferredSize(new java.awt.Dimension(64, 64));&#xa;// Code adding the component to the parent container - not shown here"/>
       </AuxValues>
     </Component>
   </SubComponents>
