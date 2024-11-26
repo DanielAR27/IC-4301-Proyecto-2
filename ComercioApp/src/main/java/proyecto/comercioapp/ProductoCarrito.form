@@ -50,30 +50,29 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="infoGeneralLabel" min="-2" pref="204" max="-2" attributes="0"/>
+                  <Component id="cantidadTextLabel" alignment="0" min="-2" pref="157" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                       <Component id="lessButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="cantidadLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="cantidadLabel" min="-2" pref="20" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                       <Component id="moreButton" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="cantidadTextLabel" alignment="0" min="-2" pref="157" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Component id="extraLabel" min="-2" pref="274" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="addToCarButton" min="-2" pref="128" max="-2" attributes="0"/>
-                  <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                      <Component id="deleteButton" min="-2" pref="127" max="-2" attributes="0"/>
-                      <Component id="modifyButton" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="addToCarButton" pref="128" max="32767" attributes="0"/>
+                  <Component id="similaresButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="modifyButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="deleteButton" alignment="0" pref="127" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -99,10 +98,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="extraLabel" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
-                      <EmptySpace min="0" pref="17" max="32767" attributes="0"/>
                       <Component id="modifyButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="deleteButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="similaresButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="addToCarButton" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -184,6 +184,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="modifyButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="similaresButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Ver Similares"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="similaresButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

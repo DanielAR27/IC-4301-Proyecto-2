@@ -14,8 +14,8 @@ proyecto\comercioapp\ProductosView$2.class
 proyecto\comercioapp\ReviewsView$5.class
 proyecto\comercioapp\ReviewProductos$6.class
 proyecto\comercioapp\FacturaEditInfo$4.class
-proyecto\comercioapp\ProductoCarrito$7$1.class
 proyecto\utils\CheckUtils.class
+proyecto\comercioapp\ProductosSimilares$1.class
 proyecto\comercioapp\HomeView$11.class
 proyecto\comercioapp\EndShop$2.class
 proyecto\comercioapp\EditFactura.class
@@ -30,6 +30,7 @@ proyecto\comercioapp\HomeView$8.class
 proyecto\comercioapp\FacturasEditView$1.class
 proyecto\comercioapp\RegisterView$2.class
 proyecto\comercioapp\EditFactura$1.class
+proyecto\comercioapp\ProductosSimilares$2$1.class
 proyecto\comercioapp\FacturasEditView$4.class
 proyecto\comercioapp\AddProducto$2.class
 proyecto\comercioapp\ProductoReview$5.class
@@ -59,6 +60,7 @@ proyecto\comercioapp\HomeView$12.class
 proyecto\comercioapp\ReviewProductos.class
 proyecto\comercioapp\ChooseDirection.class
 proyecto\comercioapp\CarritoView$6.class
+proyecto\comercioapp\ProductosSimilares$2.class
 proyecto\comercioapp\FacturaEditInfo$3.class
 proyecto\comercioapp\AddProducto$1.class
 proyecto\comercioapp\ReviewProductos$2.class
@@ -83,6 +85,7 @@ proyecto\comercioapp\EditUserView.class
 proyecto\comercioapp\FacturaEditInfo$2.class
 proyecto\comercioapp\HomeView$4.class
 proyecto\comercioapp\ProductoCarrito$2.class
+proyecto\comercioapp\ProductosSimilares.class
 proyecto\comercioapp\ProductoReview$2.class
 proyecto\comercioapp\UsuarioReview$1.class
 proyecto\comercioapp\CarritoView.class
@@ -90,6 +93,7 @@ proyecto\comercioapp\LoginView$3.class
 proyecto\comercioapp\FacturaInfo$5.class
 proyecto\comercioapp\FacturaEditInfo$5.class
 proyecto\comercioapp\ProductosView$3.class
+proyecto\comercioapp\ProductoCarrito$8.class
 proyecto\comercioapp\EndShop$3.class
 proyecto\comercioapp\FacturasView$1.class
 proyecto\comercioapp\ChoosePayMethod$1.class
@@ -109,9 +113,10 @@ proyecto\comercioapp\UsuarioReview$2.class
 proyecto\db\DBMediator.class
 proyecto\comercioapp\ProductoCarrito$4.class
 proyecto\comercioapp\ReviewProductos$4.class
+proyecto\comercioapp\ProductoCarrito$8$1.class
 proyecto\comercioapp\ReviewsView$3.class
-proyecto\comercioapp\HomeView$2.class
 proyecto\comercioapp\HomeView.class
+proyecto\comercioapp\HomeView$2.class
 proyecto\comercioapp\ChoosePayMethod.class
 proyecto\comercioapp\AdminView.class
 proyecto\comercioapp\ProductoReview$4.class

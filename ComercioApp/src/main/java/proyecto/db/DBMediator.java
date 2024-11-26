@@ -592,6 +592,38 @@ public class DBMediator {
         return productos; // Retornar la lista de estados/provincias
     }
 
+     public static List<List<Object>> getSugerenciasPorProductoID(int productoID) {
+        List<List<Object>> productosRelacionados = new ArrayList<>();
+        try {
+            // Establecer la conexión
+            Connection connection = SQLConnection.getConnection();
+            String sql = "EXEC GetTopSugerenciasPorProductoID ?"; // El procedimiento almacenado que recibe un parámetro
+            CallableStatement statement = connection.prepareCall(sql); // Crear statement
+
+            // Establecer el valor del parámetro
+            statement.setInt(1, productoID);
+
+            // Ejecutar la llamada al procedimiento
+            ResultSet resultSet = statement.executeQuery();
+                        
+            // Iterar a través de los resultados y agregar los nombres a la lista
+            while (resultSet.next()) {
+                List<Object> productoInfo = new ArrayList<>();
+                productoInfo.add(resultSet.getInt(1)); // Agregar el id del producto.
+                productoInfo.add(resultSet.getString(2)); // Agregar el nombre del producto.
+                productoInfo.add(resultSet.getInt(3)); // Agregar la cantidad de ocurrencias.
+                productosRelacionados.add(productoInfo);
+            }
+
+            // Cerrar la conexión
+            connection.close();
+        } catch (SQLException ex) {
+            return null;
+        }
+
+        return productosRelacionados; // Retornar la lista de estados/provincias
+    }
+    
     /*TODO: PARÁMETRO 2. Se podría hacer que si devuelve null hacer un warning y cerrar la página.*/
     public static List<List<Object>> getProductosOrdenadosPorPrecio(String orden, int pagina) {
         List<List<Object>> productos = new ArrayList<>();
