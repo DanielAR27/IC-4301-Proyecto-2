@@ -52,7 +52,7 @@
                       <Component id="anteriorButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
                       <Component id="siguienteButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="374" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="454" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
@@ -63,9 +63,21 @@
                           <Component id="filterDetailComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="selectLabel" alignment="0" pref="239" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="searchButton" min="-2" pref="73" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="searchButton" min="-2" pref="73" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="filterTypeLabel" min="-2" max="-2" attributes="0"/>
+                                  <Component id="filterTypeComboBox" min="-2" pref="149" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="104" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                       <Component id="adminIcon" min="-2" pref="95" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="reviewIcon" min="-2" pref="95" max="-2" attributes="0"/>
@@ -103,9 +115,15 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                      <Component id="filterLabel" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="filterLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="filterTypeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="filterComboBox" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="filterComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="filterTypeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="selectLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -261,6 +279,22 @@
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try {&#xa;    URL urlAdminIcon = new URL(&quot;https://i.ibb.co/rd1YLFJ/tuerca.png&quot;);&#xa;    ImageIcon admin = new ImageIcon(urlAdminIcon);&#xa;    adminIcon.setIcon(admin);&#xa;&#xa;    // Agregar texto debajo del &#xed;cono y usar HTML para formatearlo en negrita&#xa;    adminIcon.setText(&quot;&lt;html&gt;&lt;center&gt;&lt;b&gt;Administrador&lt;/b&gt;&lt;/center&gt;&lt;/html&gt;&quot;);&#xa;&#xa;    // Configurar la posici&#xf3;n del texto y el &#xed;cono&#xa;    adminIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);&#xa;    adminIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);&#xa;&#xa;    // Hacer el fondo transparente y quitar el borde&#xa;    adminIcon.setContentAreaFilled(false); // Hace que el fondo sea transparente&#xa;    adminIcon.setBorderPainted(false); // Quita el borde&#xa;    adminIcon.setFocusPainted(false); // Quita el borde de enfoque al hacer clic&#xa;}catch(Exception e){&#xa;    adminIcon.setText(&quot;No se ha encontrado la imagen.&quot;);&#xa;}"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="filterTypeLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&#xbf;Qu&#xe9; tipo de filtro desea?"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="filterTypeComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new javax.swing.DefaultComboBoxModel&lt;&gt;(new String[] { &quot;Autom&#xe1;tico&quot;, &quot;Manual&quot;})" type="code"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="filterTypeComboBox.addActionListener(e -&gt; cambiarModoFiltrado());"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
     </Component>
   </SubComponents>
