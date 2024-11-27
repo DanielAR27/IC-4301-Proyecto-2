@@ -80,6 +80,8 @@ public class EditFactura extends javax.swing.JDialog {
             }
         });
 
+        facturaDateChooser.setMaxSelectableDate(new Date());
+
         productosLabel.setFont(new java.awt.Font("Rockwell", 1, 18)); // NOI18N
         productosLabel.setForeground(new java.awt.Color(0, 0, 0));
         productosLabel.setText("Editar Factura");

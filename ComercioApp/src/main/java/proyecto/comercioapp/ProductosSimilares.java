@@ -187,7 +187,6 @@ public class ProductosSimilares extends javax.swing.JDialog {
             int cuenta = (Integer) productosInfo.get(buttonIndex).get(2);             
             switch(buttonIndex){
                 case 0 ->{
-                    System.out.println(nombreProducto + " | Ocurrencias: " + cuenta);
                     similarButton1.setText(nombreProducto + " | Ocurrencias: " + cuenta);
                     similarButton1.addActionListener(e -> {consultarRelacionado(buttonIndex);});
                 }case 1 ->{

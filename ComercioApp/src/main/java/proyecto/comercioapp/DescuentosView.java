@@ -37,7 +37,7 @@ public class DescuentosView extends JFrame {
         cargarDescuentos();
 
         // Campos para ingresar datos del descuento
-        productoNameField = new JTextField(15);
+        productoNameField = new JTextField(10);
         porcentajeField = new JTextField(10);
         fechaInicioChooser = new JDateChooser();
         fechaFinChooser = new JDateChooser();

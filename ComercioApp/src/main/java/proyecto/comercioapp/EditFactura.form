@@ -179,6 +179,9 @@
           </Events>
         </Component>
         <Component class="com.toedter.calendar.JDateChooser" name="facturaDateChooser">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="facturaDateChooser.setMaxSelectableDate(new Date());"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="productosLabel">
           <Properties>

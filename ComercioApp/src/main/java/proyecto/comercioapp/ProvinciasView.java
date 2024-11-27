@@ -18,6 +18,7 @@ public class ProvinciasView extends JFrame {
 
     public ProvinciasView(int usuarioID) {
         setTitle("Gestionar Provincias");
+        this.usuarioID = usuarioID;
         setResizable(false);
         setSize(500, 500); // Ajuste del tamaño de la ventana
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -32,7 +33,7 @@ public class ProvinciasView extends JFrame {
         cargarProvincias();
 
         // Campos para ingresar datos de la provincia
-        nombreField = new JTextField(20); // Campo para ingresar el nombre
+        nombreField = new JTextField(15); // Campo para ingresar el nombre
         paisField = new JTextField(10);  // Campo para ingresar el ID del país
 
         // Botones

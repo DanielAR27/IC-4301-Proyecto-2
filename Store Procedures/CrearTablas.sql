@@ -58,30 +58,6 @@ CREATE TABLE MetodoPago (
     Activo BIT DEFAULT 1                           -- Indica si el método de pago está activo (1) o no (0)
 );
 
-CREATE TABLE Facturas (
-    FacturaID INT PRIMARY KEY IDENTITY (1,1),                   -- Identificador único de la factura
-    UsuarioID INT NOT NULL FOREIGN KEY REFERENCES Usuarios(UsuarioID) ON DELETE CASCADE, -- Relación con el usuario
-    FechaFactura DATE DEFAULT GETDATE(),                  -- Fecha de la factura (fecha de compra)
-    Total DECIMAL(10, 2) NOT NULL CHECK (Total >= 0), -- Monto total con descuentos aplicados
-    CostoEnvio DECIMAL(10, 2) NOT NULL CHECK (CostoEnvio >= 0),
-	Estado NVARCHAR(50) NOT NULL DEFAULT 'Pendiente'
-);
-
-
-CREATE TABLE LineasFactura (
-    LineaFacturaID INT PRIMARY KEY IDENTITY (1,1),                         -- Identificador único de la línea de factura
-    FacturaID INT NOT NULL FOREIGN KEY REFERENCES Facturas(FacturaID) ON DELETE CASCADE, -- Relación con Factura
-    ProductoID INT NOT NULL, -- Identificador del producto comprado
-    ProductoNombre NVARCHAR(100) NOT NULL,                         -- Nombre del producto al momento de la compra
-    Linea INT NOT NULL,                                            -- Orden de la línea en la factura
-    Cantidad DECIMAL(10, 2) NOT NULL CHECK (Cantidad > 0),         -- Cantidad de producto comprado
-    PrecioOriginal DECIMAL(10, 2) NOT NULL CHECK (PrecioOriginal >= 0), -- Precio del producto sin descuento
-    DescuentoAplicado DECIMAL(5, 2) DEFAULT 0 CHECK (DescuentoAplicado BETWEEN 0 AND 100), -- % de descuento
-    LineaTotal DECIMAL(10, 2) NOT NULL CHECK (LineaTotal >= 0)     -- Total de la línea con descuento aplicado
-    -- Definición de claves foráneas con nombres bonitos y ON DELETE CASCADE
-    CONSTRAINT FK_LineasFactura_Productos FOREIGN KEY (ProductoID) REFERENCES Productos(ProductoID) ON DELETE NO ACTION
-);
-
 CREATE TABLE Marcas (
     MarcaID INT PRIMARY KEY IDENTITY (1,1),             -- Identificador único de la marca
     Nombre NVARCHAR(100) NOT NULL UNIQUE          -- Nombre de la marca, con restricción de unicidad
@@ -109,6 +85,29 @@ CREATE TABLE Productos (
     CONSTRAINT FK_Productos_Marcas FOREIGN KEY (MarcaID) REFERENCES Marcas(MarcaID) ON DELETE NO ACTION
 );
 
+CREATE TABLE Facturas (
+    FacturaID INT PRIMARY KEY IDENTITY (1,1),                   -- Identificador único de la factura
+    UsuarioID INT NOT NULL FOREIGN KEY REFERENCES Usuarios(UsuarioID) ON DELETE CASCADE, -- Relación con el usuario
+    FechaFactura DATE DEFAULT GETDATE(),                  -- Fecha de la factura (fecha de compra)
+    Total DECIMAL(10, 2) NOT NULL CHECK (Total >= 0), -- Monto total con descuentos aplicados
+    CostoEnvio DECIMAL(10, 2) NOT NULL CHECK (CostoEnvio >= 0),
+	Estado NVARCHAR(50) NOT NULL DEFAULT 'Pendiente'
+);
+
+
+CREATE TABLE LineasFactura (
+    LineaFacturaID INT PRIMARY KEY IDENTITY (1,1),                         -- Identificador único de la línea de factura
+    FacturaID INT NOT NULL FOREIGN KEY REFERENCES Facturas(FacturaID) ON DELETE CASCADE, -- Relación con Factura
+    ProductoID INT NOT NULL, -- Identificador del producto comprado
+    ProductoNombre NVARCHAR(100) NOT NULL,                         -- Nombre del producto al momento de la compra
+    Linea INT NOT NULL,                                            -- Orden de la línea en la factura
+    Cantidad DECIMAL(10, 2) NOT NULL CHECK (Cantidad > 0),         -- Cantidad de producto comprado
+    PrecioOriginal DECIMAL(10, 2) NOT NULL CHECK (PrecioOriginal >= 0), -- Precio del producto sin descuento
+    DescuentoAplicado DECIMAL(5, 2) DEFAULT 0 CHECK (DescuentoAplicado BETWEEN 0 AND 100), -- % de descuento
+    LineaTotal DECIMAL(10, 2) NOT NULL CHECK (LineaTotal >= 0)     -- Total de la línea con descuento aplicado
+    -- Definición de claves foráneas con nombres bonitos y ON DELETE CASCADE
+    CONSTRAINT FK_LineasFactura_Productos FOREIGN KEY (ProductoID) REFERENCES Productos(ProductoID) ON DELETE NO ACTION
+);
 
 CREATE TABLE Descuentos (
     DescuentoID INT PRIMARY KEY IDENTITY (1,1),

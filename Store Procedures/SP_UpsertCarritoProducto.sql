@@ -86,3 +86,9 @@ BEGIN
     END CATCH
 END;
 GO
+
+DECLARE @Resultado INT; -- Declarar la variable correctamente
+EXEC UpsertCarritoProducto 1, 3, 'Ultraball', 1, 1200, @Resultado OUTPUT; -- Ejecutar el procedimiento con OUTPUT
+SELECT @Resultado AS Resultado; -- Ver el resultado de la ejecución
+
+SELECT * FROM CarritoCompras

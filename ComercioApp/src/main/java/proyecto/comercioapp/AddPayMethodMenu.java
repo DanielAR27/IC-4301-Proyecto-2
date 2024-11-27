@@ -90,7 +90,7 @@ public class AddPayMethodMenu extends javax.swing.JFrame {
         });
 
         // Establecer la fecha máxima seleccionable a hoy
-        ExpireDateChooser.setMaxSelectableDate(new Date());
+        ExpireDateChooser.setMinSelectableDate(new Date());
 
         javax.swing.GroupLayout AddDirectionPanelLayout = new javax.swing.GroupLayout(AddDirectionPanel);
         AddDirectionPanel.setLayout(AddDirectionPanelLayout);

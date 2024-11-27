@@ -1,5 +1,5 @@
 USE DB_Proyecto;
-CREATE PROCEDURE CrearUsuario
+CREATE OR ALTER PROCEDURE CrearUsuario
     @Nombre NVARCHAR(100),
     @Apellido NVARCHAR(100),
     @Email NVARCHAR(100),
@@ -35,8 +35,8 @@ BEGIN
         END
 
         -- Intentar insertar el usuario en la tabla
-        INSERT INTO Usuarios (Nombre, Apellido, Email, Password, Telefono, FechaNacimiento)
-        VALUES (@Nombre, @Apellido, @Email, @Password, @Telefono, @FechaNacimiento);
+        INSERT INTO Usuarios (Nombre, Apellido, Email, Password, Telefono, FechaNacimiento, Rol)
+        VALUES (@Nombre, @Apellido, @Email, @Password, @Telefono, @FechaNacimiento, 'Cliente');
 
         -- Obtener el ID del usuario recién creado
         DECLARE @NuevoUsuarioID INT;

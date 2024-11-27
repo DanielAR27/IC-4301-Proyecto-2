@@ -35,7 +35,7 @@ public class DBMediator {
             statement.execute();
 
             // Recuperar el valor del parámetro de salida
-            int resultado = statement.getInt(7);
+            int resultado = statement.getInt(7);     
             
             //Cerrar la conexión.
             connection.close();
@@ -1709,13 +1709,12 @@ public class DBMediator {
             statement.setFloat(5, precioOriginal);
             // Preparar para registrar el valor de salida
             statement.registerOutParameter(6, Types.INTEGER);
-            
+                
             // Ejecutar la llamada al procedimiento
             statement.execute();
 
             // Recuperar el valor del parámetro de salida
             int resultado = statement.getInt(6);
-            
             //Cerrar la conexión.
             connection.close();
         
